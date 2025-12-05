@@ -227,7 +227,10 @@ const otherSkillsData = [
   },
 ];
 
-const initialView = () => (window.location.pathname.includes('autres-competences') ? 'other' : 'main');
+const initialView = () =>
+  window.location.hash.includes('autres-competences') || window.location.pathname.includes('autres-competences')
+    ? 'other'
+    : 'main';
 
 export default function App() {
   const [view, setView] = useState(initialView);
@@ -252,17 +255,21 @@ export default function App() {
   }, [view]);
 
   useEffect(() => {
-    const onPop = () => {
+    const onHashChange = () => {
       setView(initialView());
     };
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  const clearHash = () => {
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  };
 
   const handleNavigateSection = (id) => {
     if (view !== 'main') {
       setView('main');
-      window.history.pushState({}, '', '/');
+      clearHash();
       // Petite attente pour laisser le rendu se faire
       requestAnimationFrame(() => scrollToSection(id));
     } else {
@@ -272,12 +279,12 @@ export default function App() {
 
   const handleNavigateOther = () => {
     setView('other');
-    window.history.pushState({}, '', '/autres-competences');
+    window.location.hash = 'autres-competences';
   };
 
   const handleNavigateHome = () => {
     setView('main');
-    window.history.pushState({}, '', '/');
+    clearHash();
   };
 
   const scrollToSection = (id) => {
