@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Configuration Vite pour un déploiement GitHub Pages (racine du site utilisateur)
+// Configuration Vite simple pour un déploiement statique (GitHub Pages)
 export default defineConfig({
-  base: '/',
+  base: './',
   plugins: [react()],
 });
