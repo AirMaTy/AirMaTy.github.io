@@ -30,6 +30,20 @@ jobs:
           cp static-app.js dist/
           cp src/styles.css dist/src/
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
       - name: Upload production-ready build
         uses: actions/upload-pages-artifact@v3
         with:
