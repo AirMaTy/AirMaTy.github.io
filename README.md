@@ -1,21 +1,8 @@
 # Portfolio BUT Informatique
 
-Gabarit React minimaliste (thème sombre) pour constituer un portfolio professionnel de BUT Informatique. Il inclut une page principale (one-page) et une page "Autres compétences" accessible sans rechargement.
-
-## Démarrer
-
-```bash
-npm install
-npm run dev
-```
-
-Pour générer une version statique prête à être publiée (GitHub Pages par exemple) :
-
-```bash
-npm run build
-```
+Version 100% statique (HTML/CSS/JS) du portfolio BUT Informatique. Aucune dépendance ou outil de lancement n'est requis : il suffit d'ouvrir `index.html` dans un navigateur ou d'héberger le dossier tel quel sur GitHub Pages.
 
 ## Personnalisation rapide
-- Mettre à jour les données dans `src/App.jsx` (projets, expériences, compétences, autres compétences).
-- Remplacer l’image du portrait (`/assets/photo-profil.jpg`).
-- Adapter les liens de CV et de profils publics dans les composants `Hero`, `CVSection` et `Contact`.
+- Mettre à jour les données dans `static-app.js` (projets, expériences, compétences, autres compétences).
+- Adapter les liens de CV et d'e-mail dans la section Contact du même fichier.
+- Ajuster les couleurs, espacements ou typographies dans `styles.css`.
