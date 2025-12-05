@@ -20,6 +20,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Prepare static site
+        run: |
+          mkdir -p dist/src
+          cp index.html dist/
+          cp static-app.js dist/
+          cp src/styles.css dist/src/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
