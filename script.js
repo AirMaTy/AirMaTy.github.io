@@ -102,7 +102,7 @@ function resetGame() {
     currentPlayer = RED;
   }
   updateModeStatus();
-  renderBoard();
+  renderBoard(false);
   updateTurnStatus();
   messageEl.textContent = '';
   if (mode !== 'pvp' && currentPlayer === aiPlayer) {
@@ -175,22 +175,23 @@ function placePiece(row, col, player) {
   board[row][col] = player;
 }
 
-function renderBoard() {
+function renderBoard(animate = true) {
   boardEl.querySelectorAll('.piece').forEach(p => p.remove());
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       if (board[r][c] !== EMPTY) {
-        renderPiece(r, c, board[r][c]);
+        renderPiece(r, c, board[r][c], animate);
       }
     }
   }
 }
 
-function renderPiece(row, col, player) {
+function renderPiece(row, col, player, animate = true) {
   const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
   if (!cell) return;
   const piece = document.createElement('div');
   piece.className = `piece ${player === RED ? 'rouge' : 'jaune'}`;
+  if (animate) piece.classList.add('drop');
   cell.appendChild(piece);
 }
 
@@ -285,23 +286,23 @@ function clearWinnerHighlights() {
 function clearSuggestion() {
   suggestionCol = null;
   boardEl.classList.remove('suggestion');
-  boardEl.querySelectorAll('.cell').forEach(cell => cell.style.boxShadow = '');
-  messageEl.textContent = '';
+  boardEl.querySelectorAll('.cell').forEach(cell => cell.classList.remove('hint'));
 }
 
-function highlightSuggestion(col) {
+function highlightSuggestion(col, text) {
   clearSuggestion();
   suggestionCol = col;
   boardEl.classList.add('suggestion');
+  boardEl.style.setProperty('--suggested-col', col);
   boardEl.querySelectorAll(`.cell[data-col="${col}"]`).forEach(cell => {
-    cell.style.boxShadow = '0 0 0 2px rgba(247,178,103,0.8)';
+    cell.classList.add('hint');
   });
-  messageEl.textContent = `Coup conseillé : colonne ${col + 1}`;
+  messageEl.textContent = text ?? `Coup conseillé : colonne ${col + 1}`;
 }
 
 function aiMoveWithDelay() {
   setTimeout(() => {
-    const best = computeBestMove(board, aiPlayer);
+    const best = computeBestMove(board, aiPlayer, aiPlayer);
     if (best !== null && !gameOver) {
       playMove(best);
     }
@@ -310,8 +311,16 @@ function aiMoveWithDelay() {
 
 function handleAdvice() {
   if (mode !== 'assist' || currentPlayer === aiPlayer || gameOver) return;
-  const best = computeBestMove(board, currentPlayer);
-  if (best !== null) highlightSuggestion(best);
+  const best = computeBestMove(board, currentPlayer, currentPlayer);
+  if (best !== null) {
+    highlightSuggestion(best, `Conseil appliqué : colonne ${best + 1}`);
+    // Auto-dépose du pion conseillé pour fluidifier l'aide
+    setTimeout(() => {
+      if (!gameOver && currentPlayer !== aiPlayer) {
+        playMove(best);
+      }
+    }, 350);
+  }
 }
 
 // ----------- IA MINIMAX -----------
@@ -319,7 +328,7 @@ function handleAdvice() {
 // L'évaluation donne un score positif si la position favorise l'IA, négatif sinon.
 const MAX_DEPTH = 6;
 
-function computeBestMove(state, player) {
+function computeBestMove(state, player, perspective = aiPlayer) {
   const legalMoves = getLegalMoves(state);
   let bestScore = -Infinity;
   let bestMove = legalMoves[0] ?? null;
@@ -329,7 +338,7 @@ function computeBestMove(state, player) {
 
   for (const move of orderedMoves) {
     const { nextBoard, row } = applyMove(state, move, player);
-    const result = minimax(nextBoard, MAX_DEPTH - 1, false, -Infinity, Infinity, -player, row, move);
+    const result = minimax(nextBoard, MAX_DEPTH - 1, false, -Infinity, Infinity, -player, row, move, perspective);
     if (result > bestScore) {
       bestScore = result;
       bestMove = move;
@@ -338,12 +347,12 @@ function computeBestMove(state, player) {
   return bestMove;
 }
 
-function minimax(state, depth, maximizing, alpha, beta, player, lastRow, lastCol) {
+function minimax(state, depth, maximizing, alpha, beta, player, lastRow, lastCol, perspective) {
   const winner = lastRow !== undefined ? checkLastMoveWinner(state, lastRow, lastCol, -player) : null;
-  if (winner === aiPlayer) return 1000000 + depth; // plus tôt = mieux
-  if (winner === -aiPlayer) return -1000000 - depth;
+  if (winner === perspective) return 1000000 + depth; // plus tôt = mieux
+  if (winner === -perspective) return -1000000 - depth;
   if (isBoardFullState(state)) return 0;
-  if (depth === 0) return heuristicScore(state, aiPlayer);
+  if (depth === 0) return heuristicScore(state, perspective);
 
   const moves = getLegalMoves(state);
   // tri par proximité du centre
@@ -353,7 +362,7 @@ function minimax(state, depth, maximizing, alpha, beta, player, lastRow, lastCol
     let value = -Infinity;
     for (const move of moves) {
       const { nextBoard, row } = applyMove(state, move, player);
-      const evalScore = minimax(nextBoard, depth - 1, false, alpha, beta, -player, row, move);
+      const evalScore = minimax(nextBoard, depth - 1, false, alpha, beta, -player, row, move, perspective);
       value = Math.max(value, evalScore);
       alpha = Math.max(alpha, value);
       if (alpha >= beta) break; // élagage
@@ -363,7 +372,7 @@ function minimax(state, depth, maximizing, alpha, beta, player, lastRow, lastCol
     let value = Infinity;
     for (const move of moves) {
       const { nextBoard, row } = applyMove(state, move, player);
-      const evalScore = minimax(nextBoard, depth - 1, true, alpha, beta, -player, row, move);
+      const evalScore = minimax(nextBoard, depth - 1, true, alpha, beta, -player, row, move, perspective);
       value = Math.min(value, evalScore);
       beta = Math.min(beta, value);
       if (alpha >= beta) break;

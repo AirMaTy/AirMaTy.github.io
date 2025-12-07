@@ -1,13 +1,15 @@
 :root {
-  --bg: #111318;
-  --panel: #181b22;
+  --bg: radial-gradient(circle at 20% 20%, rgba(48, 75, 128, 0.08), transparent 32%),
+    radial-gradient(circle at 80% 10%, rgba(242, 95, 92, 0.06), transparent 30%),
+    #0f1118;
+  --panel: #171a23;
   --accent: #f25f5c;
   --accent-soft: #f7b267;
   --text: #e8ecf1;
   --muted: #9aa2b1;
-  --grid: #242836;
-  --cell: #1d212d;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --grid: #22283a;
+  --cell: #151926;
+  --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
   --radius: 12px;
 }
 
@@ -40,6 +42,7 @@ header h1 {
   margin: 0;
   font-weight: 700;
   letter-spacing: 0.5px;
+  text-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
 }
 
 .title-block h1 {
@@ -71,6 +74,23 @@ main {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px 18px;
   width: min(960px, 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.control-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% -10%, rgba(242, 95, 92, 0.16), transparent 40%),
+    radial-gradient(circle at 80% 120%, rgba(247, 178, 103, 0.15), transparent 45%);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.control-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .control label {
@@ -89,7 +109,8 @@ select, button {
   border-radius: 10px;
   font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+  transition: transform 0.1s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 select:focus, button:focus {
@@ -99,11 +120,13 @@ select:focus, button:focus {
 
 button:hover, select:hover {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
 }
 
 button:active {
   transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 button.ghost {
@@ -132,6 +155,7 @@ button.ghost {
   align-items: center;
   gap: 6px;
   text-align: center;
+  transition: transform 0.2s ease;
 }
 
 .text {
@@ -141,6 +165,7 @@ button.ghost {
 .text.emphasis {
   font-size: 1.05rem;
   font-weight: 600;
+  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
 }
 
 .muted {
@@ -172,42 +197,6 @@ button.ghost {
   gap: 10px;
 }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: #1f2430;
-  color: var(--muted);
-  border: 1px solid #2b3040;
-}
-
-.status-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  text-align: center;
-}
-
-.text {
-  font-size: 1rem;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.board-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
 .board {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -220,13 +209,6 @@ button.ghost {
   width: min(760px, 100%);
   aspect-ratio: 7 / 6;
   border: 1px solid #2c3242;
-  gap: 6px;
-  background: var(--grid);
-  padding: 10px;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  width: min(720px, 95vw);
-  aspect-ratio: 7 / 6;
 }
 
 .cell {
@@ -241,8 +223,8 @@ button.ghost {
 
 .cell:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(242, 95, 92, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px rgba(242, 95, 92, 0.3), 0 12px 20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .cell::after {
@@ -252,16 +234,6 @@ button.ghost {
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.03);
-  background: var(--cell);
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: box-shadow 0.15s ease, transform 0.1s ease;
-}
-
-.cell:hover {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
-  transform: translateY(-1px);
 }
 
 .piece {
@@ -270,7 +242,7 @@ button.ghost {
   border-radius: 50%;
   background: #2f3544;
   box-shadow: inset 0 8px 14px rgba(255, 255, 255, 0.05), inset 0 -6px 12px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, filter 0.2s ease;
 }
 
 .piece.rouge {
@@ -281,8 +253,35 @@ button.ghost {
   background: linear-gradient(145deg, #ffd166, #e5b027);
 }
 
+.piece.drop {
+  animation: drop 0.4s cubic-bezier(0.25, 0.85, 0.4, 1.15);
+}
+
+@keyframes drop {
+  0% { transform: translateY(-160%); opacity: 0; }
+  70% { transform: translateY(8%); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
 .winner {
   box-shadow: 0 0 0 3px var(--accent-soft), 0 0 18px rgba(247, 178, 103, 0.6);
+  animation: pulse-win 1.4s ease-in-out infinite;
+}
+
+.winner .piece {
+  animation: shine 1.3s ease-in-out infinite;
+}
+
+@keyframes pulse-win {
+  0% { transform: scale(1); box-shadow: 0 0 0 3px rgba(247, 178, 103, 0.8), 0 0 16px rgba(247, 178, 103, 0.5); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 4px rgba(242, 95, 92, 0.9), 0 0 22px rgba(242, 95, 92, 0.7); }
+  100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(247, 178, 103, 0.8), 0 0 16px rgba(247, 178, 103, 0.5); }
+}
+
+@keyframes shine {
+  0% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); }
+  50% { filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.35)); }
+  100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); }
 }
 
 .col-labels {
@@ -297,17 +296,42 @@ button.ghost {
 }
 
 .suggestion .cell {
-  box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.8);
+  box-shadow: none;
 }
 
 .suggestion .cell:hover {
   transform: translateY(-1px);
 }
 
+.cell.hint {
+  box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.85), 0 8px 16px rgba(247, 178, 103, 0.25);
+  animation: pulse-hint 1s ease-in-out infinite;
 }
 
-.suggestion .cell:hover {
-  transform: translateY(-1px);
+@keyframes pulse-hint {
+  0% { box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.85), 0 8px 16px rgba(247, 178, 103, 0.25); }
+  50% { box-shadow: 0 0 0 4px rgba(242, 95, 92, 0.9), 0 10px 22px rgba(242, 95, 92, 0.35); }
+  100% { box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.85), 0 8px 16px rgba(247, 178, 103, 0.25); }
+}
+
+.text.emphasis,
+#message {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.board-shell {
+  position: relative;
+}
+
+.board-shell::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 28px;
+  background: linear-gradient(120deg, rgba(242, 95, 92, 0.08), rgba(247, 178, 103, 0.06));
+  filter: blur(22px);
+  opacity: 0.5;
+  z-index: -1;
 }
 
 footer {
