@@ -22,6 +22,7 @@ let currentPlayer = RED;
 let gameOver = false;
 let mode = 'ai';
 let suggestionCol = null;
+let suggestionRow = null;
 let aiPlayer = YELLOW; // mis à jour selon le premier joueur
 
 init();
@@ -92,6 +93,7 @@ function resetGame() {
   board = createEmptyBoard();
   gameOver = false;
   suggestionCol = null;
+  suggestionRow = null;
   clearSuggestion();
   clearWinnerHighlights();
   if (mode === 'pvp') {
@@ -105,9 +107,13 @@ function resetGame() {
   renderBoard(false);
   updateTurnStatus();
   messageEl.textContent = '';
+  if (mode === 'assist' && currentPlayer !== aiPlayer) {
+    provideSuggestionPreview();
+  }
   if (mode !== 'pvp' && currentPlayer === aiPlayer) {
     aiMoveWithDelay();
   }
+  turnStatus.textContent = text;
 }
 
 function updateModeStatus() {
@@ -158,6 +164,11 @@ function playMove(col) {
   }
 
   switchTurn();
+
+  if (mode === 'assist' && currentPlayer !== aiPlayer && !gameOver) {
+    provideSuggestionPreview();
+  }
+}
 
   if (mode !== 'pvp' && currentPlayer === aiPlayer && !gameOver) {
     aiMoveWithDelay();
@@ -285,8 +296,10 @@ function clearWinnerHighlights() {
 
 function clearSuggestion() {
   suggestionCol = null;
+  suggestionRow = null;
   boardEl.classList.remove('suggestion');
   boardEl.querySelectorAll('.cell').forEach(cell => cell.classList.remove('hint'));
+  boardEl.querySelectorAll('.piece.preview').forEach(p => p.remove());
 }
 
 function highlightSuggestion(col, text) {
@@ -300,6 +313,30 @@ function highlightSuggestion(col, text) {
   messageEl.textContent = text ?? `Coup conseillé : colonne ${col + 1}`;
 }
 
+function provideSuggestionPreview(forceText) {
+  if (mode !== 'assist' || currentPlayer === aiPlayer || gameOver) return;
+  const best = computeBestMove(board, currentPlayer, currentPlayer);
+  if (best === null) return;
+  const row = getAvailableRow(best);
+  if (row === null) return;
+
+  const message = forceText
+    ? `Conseil actualisé : colonne ${best + 1}`
+    : `Coup conseillé pré-positionné : colonne ${best + 1}`;
+
+  highlightSuggestion(best, message);
+  suggestionRow = row;
+  placePreviewPiece(row, best, currentPlayer);
+}
+
+function placePreviewPiece(row, col, player) {
+  const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+  if (!cell) return;
+  const preview = document.createElement('div');
+  preview.className = `piece preview ${player === RED ? 'rouge' : 'jaune'}`;
+  cell.appendChild(preview);
+}
+
 function aiMoveWithDelay() {
   setTimeout(() => {
     const best = computeBestMove(board, aiPlayer, aiPlayer);
@@ -311,16 +348,7 @@ function aiMoveWithDelay() {
 
 function handleAdvice() {
   if (mode !== 'assist' || currentPlayer === aiPlayer || gameOver) return;
-  const best = computeBestMove(board, currentPlayer, currentPlayer);
-  if (best !== null) {
-    highlightSuggestion(best, `Conseil appliqué : colonne ${best + 1}`);
-    // Auto-dépose du pion conseillé pour fluidifier l'aide
-    setTimeout(() => {
-      if (!gameOver && currentPlayer !== aiPlayer) {
-        playMove(best);
-      }
-    }, 350);
-  }
+  provideSuggestionPreview(true);
 }
 
 // ----------- IA MINIMAX -----------
