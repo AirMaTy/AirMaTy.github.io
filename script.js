@@ -1,26 +1,33 @@
-// Hub d'activités : chaque module reste autonome mais partage le même thème.
 (() => {
+  // ---------- Navigation / vues ----------
   const activities = Array.from(document.querySelectorAll('.activity'));
+  const navItems = Array.from(document.querySelectorAll('[data-target]'));
+  const sidebar = document.querySelector('.nav-list');
+  const toggle = document.querySelector('.nav-toggle');
   const refreshers = {};
 
-  function showView(id) {
+  function showActivity(id) {
     activities.forEach(sec => sec.classList.toggle('active', sec.id === id));
-    document.querySelectorAll('[data-target]').forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
+    navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     refreshers[id]?.();
+    if (sidebar && sidebar.classList.contains('open')) sidebar.classList.remove('open');
   }
 
   document.addEventListener('click', (e) => {
     const target = e.target.closest('[data-target]');
     if (!target) return;
     e.preventDefault();
-    showView(target.dataset.target);
+    showActivity(target.dataset.target);
   });
 
-  const initiallyActive = document.querySelector('.activity.active') || activities[0];
-  if (initiallyActive) showView(initiallyActive.id);
+  if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+  showActivity('hub');
 
-  // --------------------------- PUISSANCE 4 ---------------------------
+  // Utility
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+  // ---------- Puissance 4 ----------
   const ROWS = 6, COLS = 7, CONNECT = 4, EMPTY = 0, RED = 1, YELLOW = -1;
   const boardEl = document.getElementById('board');
   const modeSelect = document.getElementById('mode');
@@ -125,10 +132,7 @@
     if (mode === 'assist' && currentPlayer !== aiPlayer && !gameOver) provideSuggestionPreview();
     if (mode !== 'pvp' && currentPlayer === aiPlayer && !gameOver) aiMoveWithDelay();
   }
-  function getAvailableRow(col) {
-    for (let r = ROWS - 1; r >= 0; r--) if (cfBoard[r][col] === EMPTY) return r;
-    return null;
-  }
+  function getAvailableRow(col) { for (let r = ROWS - 1; r >= 0; r--) if (cfBoard[r][col] === EMPTY) return r; return null; }
   function placePiece(row, col, player) { cfBoard[row][col] = player; }
   function renderBoard(animate = true) {
     boardEl.querySelectorAll('.piece').forEach(p => p.remove());
@@ -148,21 +152,19 @@
   function evaluateOutcome(row, col, player) {
     const winLine = checkWin(row, col, player);
     if (winLine) { highlightWinners(winLine); return { finished: true, winner: player }; }
-    if (isBoardFull()) return { finished: true, winner: null };
+    if (cfBoard[0].every(v => v !== EMPTY)) return { finished: true, winner: null };
     return { finished: false };
   }
   function checkWin(row, col, player) {
     const dirs = [[0,1],[1,0],[1,1],[1,-1]];
     for (const [dr,dc] of dirs) {
       const line=[[row,col]];
-      let r=row+dr,c=col+dc; while(isInside(r,c)&&cfBoard[r][c]===player){line.push([r,c]);r+=dr;c+=dc;}
-      r=row-dr;c=col-dc; while(isInside(r,c)&&cfBoard[r][c]===player){line.unshift([r,c]);r-=dr;c-=dc;}
+      let r=row+dr,c=col+dc; while(r>=0&&r<ROWS&&c>=0&&c<COLS&&cfBoard[r][c]===player){line.push([r,c]);r+=dr;c+=dc;}
+      r=row-dr;c=col-dc; while(r>=0&&r<ROWS&&c>=0&&c<COLS&&cfBoard[r][c]===player){line.unshift([r,c]);r-=dr;c-=dc;}
       if(line.length>=CONNECT) return line.slice(0,CONNECT);
     }
     return null;
   }
-  const isInside=(r,c)=>r>=0&&r<ROWS&&c>=0&&c<COLS;
-  const isBoardFull=()=>cfBoard[0].every(v=>v!==EMPTY);
   function switchTurn(){ currentPlayer=-currentPlayer; updateTurnStatus(); }
   function endGame({winner}){
     gameOver=true;
@@ -177,7 +179,7 @@
   function highlightSuggestion(col,text){ clearSuggestion(); suggestionCol=col; boardEl.querySelectorAll(`.cell[data-col="${col}"]`).forEach(cell=>cell.classList.add('hint')); messageEl.textContent=text ?? `Coup conseillé : colonne ${col+1}`; }
   function provideSuggestionPreview(forceText){ if(mode!=='assist'||currentPlayer===aiPlayer||gameOver) return; const best=computeBestMove(cfBoard,currentPlayer,currentPlayer); if(best===null) return; const row=getAvailableRow(best); if(row===null) return; const msg=forceText?`Conseil actualisé : colonne ${best+1}`:`Coup conseillé pré-positionné : colonne ${best+1}`; highlightSuggestion(best,msg); suggestionRow=row; placePreviewPiece(row,best,currentPlayer); }
   function placePreviewPiece(row,col,player){ const cell=boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); if(!cell) return; const preview=document.createElement('div'); preview.className=`piece preview ${player===RED?'rouge':'jaune'}`; cell.appendChild(preview); }
-  function aiMoveWithDelay(){ setTimeout(()=>{ const best=computeBestMove(cfBoard,aiPlayer,aiPlayer); if(best!==null && !gameOver) playMove(best); },240); }
+  function aiMoveWithDelay(){ setTimeout(()=>{ const best=computeBestMove(cfBoard,aiPlayer,aiPlayer); if(best!==null && !gameOver) playMove(best); },220); }
   function handleAdvice(){ if(mode!=='assist'||currentPlayer===aiPlayer||gameOver) return; provideSuggestionPreview(true); }
 
   function computeBestMove(state,player,perspective){
@@ -200,330 +202,359 @@
     if(depth===0) return heuristicScore(state,perspective);
     const moves=getLegalMoves(state).sort((a,b)=>Math.abs(a-3)-Math.abs(b-3));
     if(maximizing){
-      let value=-Infinity;
-      for(const move of moves){
-        const {nextBoard,row}=applyMove(state,move,player);
-        value=Math.max(value, minimax(nextBoard,depth-1,false,alpha,beta,-player,row,move,perspective));
-        alpha=Math.max(alpha,value); if(alpha>=beta) break;
-      }
-      return value;
+      let best=-Infinity;
+      for(const m of moves){ const {nextBoard,row}=applyMove(state,m,player); const val=minimax(nextBoard,depth-1,false,alpha,beta,-player,row,m,perspective); best=Math.max(best,val); alpha=Math.max(alpha,val); if(beta<=alpha) break; }
+      return best;
     } else {
-      let value=Infinity;
-      for(const move of moves){
-        const {nextBoard,row}=applyMove(state,move,player);
-        value=Math.min(value, minimax(nextBoard,depth-1,true,alpha,beta,-player,row,move,perspective));
-        beta=Math.min(beta,value); if(alpha>=beta) break;
-      }
-      return value;
-    }
-    return best;
-  }
-  const getLegalMoves=(state)=>{ const moves=[]; for(let c=0;c<COLS;c++) if(state[0][c]===EMPTY) moves.push(c); return moves; };
-  const isBoardFullState=(state)=>state[0].every(v=>v!==EMPTY);
-  function applyMove(state,col,player){ const next=state.map(r=>[...r]); for(let r=ROWS-1;r>=0;r--){ if(next[r][col]===EMPTY){ next[r][col]=player; return {nextBoard:next,row:r}; } } return {nextBoard:state,row:null}; }
-  function checkLastMoveWinner(state,row,col,player){ const dirs=[[0,1],[1,0],[1,1],[1,-1]]; for(const[dr,dc] of dirs){ let count=1; count+=countDir(state,row,col,dr,dc,player); count+=countDir(state,row,col,-dr,-dc,player); if(count>=CONNECT) return player;} return null; }
-  function countDir(state,row,col,dr,dc,player){ let r=row+dr,c=col+dc,count=0; while(r>=0&&r<ROWS&&c>=0&&c<COLS&&state[r][c]===player){count++; r+=dr; c+=dc;} return count; }
-  function heuristicScore(state,player){ let score=0; const center=Math.floor(COLS/2); let centerCount=0; for(let r=0;r<ROWS;r++) if(state[r][center]===player) centerCount++; score+=centerCount*6; const windows=getAllWindows(state); for(const w of windows) score+=evaluateWindow(w,player); return score; }
-  function getAllWindows(state){ const w=[]; for(let r=0;r<ROWS;r++) for(let c=0;c<=COLS-CONNECT;c++) w.push([state[r][c],state[r][c+1],state[r][c+2],state[r][c+3]]); for(let c=0;c<COLS;c++) for(let r=0;r<=ROWS-CONNECT;r++) w.push([state[r][c],state[r+1][c],state[r+2][c],state[r+3][c]]); for(let r=0;r<=ROWS-CONNECT;r++) for(let c=0;c<=COLS-CONNECT;c++) w.push([state[r][c],state[r+1][c+1],state[r+2][c+2],state[r+3][c+3]]); for(let r=CONNECT-1;r<ROWS;r++) for(let c=0;c<=COLS-CONNECT;c++) w.push([state[r][c],state[r-1][c+1],state[r-2][c+2],state[r-3][c+3]]); return w; }
-  function evaluateWindow(window,player){ const opp=-player; const cp=window.filter(v=>v===player).length; const co=window.filter(v=>v===opp).length; const ce=window.filter(v=>v===EMPTY).length; if(cp===4) return 100000; if(cp===3&&ce===1) return 500; if(cp===2&&ce===2) return 60; if(cp===1&&ce===3) return 6; if(co===3&&ce===1) return -400; if(co===2&&ce===2) return -50; return 0; }
-
-  buildGrid();
-  bindEvents();
-  resetGame();
-  refreshers.connect4 = () => { renderBoard(false); updateTurnStatus(); };
-
-  // --------------------------- SNAKE ---------------------------
-  const snakeCanvas = document.getElementById('snakeCanvas');
-  const sctx = snakeCanvas.getContext('2d');
-  const snakeStatus = document.getElementById('snakeStatus');
-  const snakeManualBtn = document.getElementById('snakeManual');
-  const snakeAutoBtn = document.getElementById('snakeAuto');
-  const snakeResetBtn = document.getElementById('snakeReset');
-  const gridSize = 14;
-  let snake = [];
-  let food = { x: 5, y: 5 };
-  let direction = { x: 1, y: 0 };
-  let snakeTimer; let autoMode = true; let pendingDir = direction;
-
-  function snakeInit(){
-    snake=[{x:2,y:2},{x:1,y:2},{x:0,y:2}];
-    direction={x:1,y:0}; pendingDir=direction; food=randFreeCell();
-    clearInterval(snakeTimer);
-    snakeTimer=setInterval(()=>snakeStep(),160);
-    snakeStatus.textContent= autoMode? 'Mode IA continu' : 'Mode manuel';
-    drawSnake();
-  }
-  function randFreeCell(){ let cell; do { cell={x:Math.floor(Math.random()*gridSize), y:Math.floor(Math.random()*gridSize)}; } while(snake.some(p=>p.x===cell.x&&p.y===cell.y)); return cell; }
-  function drawSnake(){ sctx.clearRect(0,0,snakeCanvas.width,snakeCanvas.height); const size=snakeCanvas.width/gridSize; sctx.fillStyle='#111420'; sctx.fillRect(0,0,snakeCanvas.width,snakeCanvas.height); snake.forEach((seg,i)=>{ sctx.fillStyle=i===0? '#f25f5c':'#7ad7f0'; sctx.fillRect(seg.x*size+2, seg.y*size+2, size-4,size-4); }); sctx.fillStyle='#ffd166'; sctx.beginPath(); sctx.arc((food.x+0.5)*size,(food.y+0.5)*size,size*0.32,0,Math.PI*2); sctx.fill(); }
-  function snakeStep(){ if(autoMode) pendingDir = snakeAI(); direction=pendingDir; const head={x:snake[0].x+direction.x, y:snake[0].y+direction.y}; if(head.x<0||head.x>=gridSize||head.y<0||head.y>=gridSize||snake.some(p=>p.x===head.x&&p.y===head.y)){ snakeStatus.textContent='Collision !'; clearInterval(snakeTimer); return; } snake.unshift(head); if(head.x===food.x&&head.y===food.y){ food=randFreeCell(); } else snake.pop(); drawSnake(); }
-  function snakeAI(){ // BFS vers la nourriture, sinon mouvement sûr
-    const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-    const queue=[[snake[0],[]]]; const visited=new Set([`${snake[0].x},${snake[0].y}`]); const bodySet=new Set(snake.map(p=>`${p.x},${p.y}`));
-    while(queue.length){ const [{x,y},path]=queue.shift(); if(x===food.x&&y===food.y&&path.length){ return path[0]; }
-      for(const[dX,dY] of dirs){ const nx=x+dX, ny=y+dY; const key=`${nx},${ny}`; if(nx<0||ny<0||nx>=gridSize||ny>=gridSize) continue; if(bodySet.has(key) && !(nx===snake[snake.length-1].x && ny===snake[snake.length-1].y)) continue; if(!visited.has(key)){ visited.add(key); queue.push([{x:nx,y:ny}, [...path,{x:dX,y:dY}]]); }
-      }
+      let best=Infinity;
+      for(const m of moves){ const {nextBoard,row}=applyMove(state,m,player); const val=minimax(nextBoard,depth-1,true,alpha,beta,-player,row,m,perspective); best=Math.min(best,val); beta=Math.min(beta,val); if(beta<=alpha) break; }
+      return best;
     }
     // fallback: choisir un déplacement sûr
     for(const[dX,dY] of dirs){ const nx=snake[0].x+dX, ny=snake[0].y+dY; if(nx>=0&&ny>=0&&nx<gridSize&&ny<gridSize&&!snake.some(p=>p.x===nx&&p.y===ny)) return {x:dX,y:dY}; }
     return direction;
   }
-  document.addEventListener('keydown', e=>{
-    if(!document.getElementById('snake').classList.contains('active')) return;
-    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
-      autoMode=false; snakeStatus.textContent='Mode manuel';
-      const map={ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0}};
-      const nd=map[e.key]; if(nd.x!==-direction.x||nd.y!==-direction.y) pendingDir=nd;
+  function getLegalMoves(state){ return Array.from({length:COLS},(_,c)=>c).filter(c=>state[0][c]===EMPTY); }
+  function applyMove(state,col,player){ const newBoard=state.map(r=>[...r]); let row=null; for(let r=ROWS-1;r>=0;r--){ if(newBoard[r][col]===EMPTY){ newBoard[r][col]=player; row=r; break; } } return {nextBoard:newBoard,row}; }
+  function checkLastMoveWinner(board,row,col,player){
+    const dirs=[[0,1],[1,0],[1,1],[1,-1]];
+    for(const [dr,dc] of dirs){
+      let count=1; let r=row+dr,c=col+dc; while(r>=0&&r<ROWS&&c>=0&&c<COLS&&board[r][c]===player){count++;r+=dr;c+=dc;}
+      r=row-dr;c=col-dc; while(r>=0&&r<ROWS&&c>=0&&c<COLS&&board[r][c]===player){count++;r-=dr;c-=dc;}
+      if(count>=CONNECT) return player;
+    }
+    return null;
+  }
+  const isBoardFullState=(state)=>state[0].every(v=>v!==EMPTY);
+  function heuristicScore(board,perspective){
+    let score=0;
+    const lines=[];
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) lines.push(getWindow(r,c,0,1),getWindow(r,c,1,0),getWindow(r,c,1,1),getWindow(r,c,1,-1));
+    for(const window of lines){
+      if(!window||window.length<CONNECT) continue;
+      const val=window.reduce((s,[r,c])=>s+board[r][c],0);
+      const empties=window.filter(([r,c])=>board[r][c]===EMPTY).length;
+      if(Math.abs(val)===CONNECT) score+= (val>0?1000:-1000)*(val===CONNECT?1:-1);
+      else score+= (val*10) - empties*2;
+    }
+    return perspective===RED?score:-score;
+  }
+  function getWindow(r,c,dr,dc){ const coords=[]; for(let i=0;i<CONNECT;i++){ const nr=r+dr*i,nc=c+dc*i; if(nr<0||nr>=ROWS||nc<0||nc>=COLS) return null; coords.push([nr,nc]); } return coords; }
+
+  refreshers.connect4 = () => { if(!boardEl.childElementCount) buildGrid(); updateStarterOptions(); resetGame(); };
+  buildGrid(); bindEvents();
+
+  // ---------- Snake ----------
+  const snakeCanvas=document.getElementById('snakeCanvas');
+  const sCtx=snakeCanvas.getContext('2d');
+  const gridSize=21;
+  let snake=[{x:10,y:10}];
+  let dir={x:1,y:0};
+  let food={x:15,y:10};
+  let snakeInterval=null;
+  let snakeMode='manual';
+  const speed=120;
+  const manualBtn=document.getElementById('snakeManual');
+  const autoBtn=document.getElementById('snakeAuto');
+  const resetSnake=document.getElementById('snakeReset');
+
+  function drawCell(x,y,color){ const size=snakeCanvas.width/gridSize; sCtx.fillStyle=color; sCtx.fillRect(x*size,y*size,size-1,size-1); }
+  function spawnFood(){ food={x:rand(0,gridSize-1), y:rand(0,gridSize-1)}; }
+  function resetSnakeGame(){ snake=[{x:10,y:10}]; dir={x:1,y:0}; spawnFood(); clearInterval(snakeInterval); snakeInterval=setInterval(stepSnake,speed); }
+  function setDir(nx,ny){ if(-nx===dir.x && -ny===dir.y) return; dir={x:nx,y:ny}; }
+
+  document.addEventListener('keydown',(e)=>{
+    const key=e.key.toLowerCase();
+    if(key==='z' || e.key==='ArrowUp') setDir(0,-1);
+    if(key==='s' || e.key==='ArrowDown') setDir(0,1);
+    if(key==='q' || e.key==='ArrowLeft') setDir(-1,0);
+    if(key==='d' || e.key==='ArrowRight') setDir(1,0);
+  });
+  manualBtn.addEventListener('click',()=>{ snakeMode='manual'; manualBtn.classList.add('ghost'); autoBtn.classList.remove('ghost'); });
+  autoBtn.addEventListener('click',()=>{ snakeMode='auto'; autoBtn.classList.add('ghost'); manualBtn.classList.remove('ghost'); });
+  resetSnake.addEventListener('click',resetSnakeGame);
+
+  function aiDirection(){
+    // simple greedy avoiding collisions
+    const head=snake[0];
+    const options=[{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+    const valid=options.filter(o=>!willCollide(head,o));
+    valid.sort((a,b)=>distSq(head,a,food)-distSq(head,b,food));
+    return valid[0]||dir;
+  }
+  function distSq(head,o,target){ const nx=head.x+o.x, ny=head.y+o.y; return (nx-target.x)**2+(ny-target.y)**2; }
+  function willCollide(head,o){ const nx=head.x+o.x, ny=head.y+o.y; if(nx<0||ny<0||nx>=gridSize||ny>=gridSize) return true; return snake.some((s,i)=>i===snake.length-1?false:(s.x===nx&&s.y===ny)); }
+
+  function stepSnake(){
+    if(snakeMode==='auto') dir=aiDirection();
+    const head={...snake[0]};
+    head.x+=dir.x; head.y+=dir.y;
+    if(head.x<0||head.y<0||head.x>=gridSize||head.y>=gridSize|| snake.some(s=>s.x===head.x&&s.y===head.y)) {
+      resetSnakeGame();
+      return;
+    }
+    snake.unshift(head);
+    if(head.x===food.x && head.y===food.y) spawnFood(); else snake.pop();
+    drawSnake();
+  }
+  function drawSnake(){
+    sCtx.fillStyle='#0c0e15'; sCtx.fillRect(0,0,snakeCanvas.width,snakeCanvas.height);
+    drawCell(food.x,food.y,'#6bffb2');
+    snake.forEach((p,i)=>drawCell(p.x,p.y,i===0?'#ff6b6b':'#ff9f9f'));
+  }
+  refreshers.snake=()=>{ resetSnakeGame(); drawSnake(); };
+
+  // ---------- 2048 ----------
+  const gridEl=document.getElementById('grid2048');
+  const status2048=document.getElementById('status2048');
+  let grid2048; let aiTimer=null; const size=4;
+
+  function init2048(){ grid2048=createGrid(); addTile(); addTile(); render2048(); status2048.textContent=''; }
+  function createGrid(){ return Array.from({length:size},()=>Array(size).fill(0)); }
+  function addTile(){ const empties=[]; grid2048.forEach((row,r)=>row.forEach((v,c)=>{ if(!v) empties.push([r,c]); })); if(!empties.length) return; const [r,c]=empties[rand(0,empties.length-1)]; grid2048[r][c]=Math.random()<0.9?2:4; }
+  function render2048(){ gridEl.innerHTML=''; grid2048.forEach(row=>row.forEach(val=>{ const tile=document.createElement('div'); tile.className='tile'; tile.style.background=val?`linear-gradient(135deg, rgba(106,227,255,0.25), rgba(138,125,255,0.18))`:'#0c0e15'; tile.style.color= val>=128?'#fff':'#0f1117'; tile.innerHTML= val?`<span>${val}</span>`:''; tile.style.boxShadow= val? 'inset 0 0 0 1px rgba(255,255,255,0.06)': 'inset 0 0 0 1px var(--border)'; gridEl.appendChild(tile); })); }
+  function compressRow(row){ const filtered=row.filter(v=>v); const res=[]; while(filtered.length){ if(filtered.length>1 && filtered[0]===filtered[1]){ res.push(filtered[0]*2); filtered.splice(0,2); } else { res.push(filtered.shift()); } } while(res.length<size) res.push(0); return res; }
+  function transform(dir, matrix){
+    const rotate=m=>m[0].map((_,i)=>m.map(row=>row[i]));
+    const flip=m=>m.map(r=>[...r].reverse());
+    let work=matrix.map(r=>[...r]);
+    if(dir==='up'){ work=rotate(work); work=work.map(compressRow); work=rotate(work); }
+    if(dir==='down'){ work=rotate(work); work=flip(work); work=work.map(compressRow); work=flip(work); work=rotate(work); }
+    if(dir==='left'){ work=work.map(compressRow); }
+    if(dir==='right'){ work=work.map(r=>compressRow([...r].reverse()).reverse()); }
+    return work;
+  }
+  function move(dir){
+    const work=transform(dir, grid2048);
+    const moved = !gridsEqual(work, grid2048);
+    if(moved){ grid2048=work; addTile(); render2048(); check2048(); }
+  }
+  function hasMoves(){
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(grid2048[r][c]===0) return true;
+    const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++) for(const [dr,dc] of dirs){ const nr=r+dr,nc=c+dc; if(nr>=0&&nr<size&&nc>=0&&nc<size&&grid2048[r][c]===grid2048[nr][nc]) return true; }
+    return false;
+  }
+  function check2048(){
+    const flat=grid2048.flat();
+    if(flat.includes(2048)) status2048.textContent='Victoire !';
+    else if(!hasMoves()) status2048.textContent='Perdu.';
+  }
+  document.addEventListener('keydown',(e)=>{
+    const key=e.key;
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','z','q','s','d','Z','Q','S','D'].includes(key)){
+      if(key==='ArrowUp'||key==='z'||key==='Z') move('up');
+      if(key==='ArrowDown'||key==='s'||key==='S') move('down');
+      if(key==='ArrowLeft'||key==='q'||key==='Q') move('left');
+      if(key==='ArrowRight'||key==='d'||key==='D') move('right');
     }
   });
-  snakeManualBtn.addEventListener('click',()=>{autoMode=false; snakeStatus.textContent='Mode manuel';});
-  snakeAutoBtn.addEventListener('click',()=>{autoMode=true; snakeStatus.textContent='Mode IA continu';});
-  snakeResetBtn.addEventListener('click',snakeInit);
-  snakeInit();
-  refreshers.snake = drawSnake;
-
-  // --------------------------- 2048 ---------------------------
-  const gridEl = document.getElementById('grid2048');
-  const scoreEl = document.getElementById('score');
-  const solverToggle = document.getElementById('solverToggle');
-  const gameResetBtn = document.getElementById('gameReset');
-  let board2048 = Array.from({length:4},()=>Array(4).fill(0));
-  let score=0; let solverInterval=null; let solverRunning=false;
-
-  function setupGrid(){ gridEl.innerHTML=''; for(let i=0;i<16;i++){ const cell=document.createElement('div'); cell.className='tile2048'; const span=document.createElement('span'); cell.appendChild(span); gridEl.appendChild(cell);} }
-  function reset2048(){ board2048=Array.from({length:4},()=>Array(4).fill(0)); score=0; addRandomTile(); addRandomTile(); render2048(); stopSolver(); }
-  function addRandomTile(){ const empties=[]; for(let r=0;r<4;r++) for(let c=0;c<4;c++) if(board2048[r][c]===0) empties.push([r,c]); if(!empties.length) return; const [r,c]=empties[Math.floor(Math.random()*empties.length)]; board2048[r][c]=Math.random()<0.9?2:4; }
-  function render2048(){ const tiles=[...gridEl.querySelectorAll('.tile2048 span')]; tiles.forEach((span,i)=>{ const r=Math.floor(i/4), c=i%4, val=board2048[r][c]; span.textContent=val||''; span.style.background=val?`linear-gradient(135deg, rgba(242,95,92,${0.25+Math.log2(val)/12}), rgba(122,215,240,${0.2+Math.log2(val)/14}))`:'transparent'; span.style.transform= val? 'scale(1)': 'scale(0.9)'; }); scoreEl.textContent=`Score : ${score}`; }
-  function move(dir){ const rotated=rotateBoard(board2048,dir); let moved=false; for(let r=0;r<4;r++){ const row=rotated[r].filter(v=>v); for(let i=0;i<row.length-1;i++){ if(row[i]===row[i+1]){ row[i]*=2; score+=row[i]; row.splice(i+1,1);} }
-      while(row.length<4) row.push(0); if(row.some((v,i)=>v!==rotated[r][i])) moved=true; rotated[r]=row; }
-    board2048=rotateBoard(rotated,(4-dir)%4); if(moved){ addRandomTile(); render2048(); }
+  document.getElementById('reset2048').addEventListener('click',()=>{ clearInterval(aiTimer); aiTimer=null; init2048(); });
+  document.getElementById('ai2048').addEventListener('click',()=>{ if(aiTimer) return; aiTimer=setInterval(aiStep,220); });
+  document.getElementById('stopAI2048').addEventListener('click',()=>{ clearInterval(aiTimer); aiTimer=null; });
+  function aiStep(){
+    const dirs=['up','left','right','down'];
+    for(const d of dirs){ const trial=transform(d, grid2048); if(!gridsEqual(trial, grid2048)){ grid2048=trial; addTile(); render2048(); check2048(); return; } }
+    move(dirs[rand(0,3)]);
   }
-  function rotateBoard(mat,times){ let res=mat.map(row=>[...row]); for(let t=0;t<times;t++){ const n=res.length; const m=Array.from({length:n},()=>Array(n).fill(0)); for(let r=0;r<n;r++) for(let c=0;c<n;c++) m[c][n-1-r]=res[r][c]; res=m; } return res; }
-  function bestMove(){ const dirs=[0,1,2,3]; let best=null; let bestScore=-Infinity; for(const d of dirs){ const copy=board2048.map(r=>[...r]); const before=JSON.stringify(copy); const rotated=rotateBoard(copy,d); let gained=0; for(let r=0;r<4;r++){ const row=rotated[r].filter(v=>v); for(let i=0;i<row.length-1;i++){ if(row[i]===row[i+1]){ row[i]*=2; gained+=row[i]; row.splice(i+1,1);} }
-        while(row.length<4) row.push(0); rotated[r]=row; }
-      const restored=rotateBoard(rotated,(4-d)%4); if(JSON.stringify(restored)===before) continue; const h=heuristic2048(restored)+gained; if(h>bestScore){bestScore=h; best=d;}
-    }
-    return best;
-  }
-  function heuristic2048(mat){ const empty = mat.flat().filter(v=>v===0).length*100; const max=Math.max(...mat.flat()); const mono=mat.reduce((acc,row)=>acc+ row.reduce((s,v,i)=> s+(i? Math.abs(v-row[i-1]):0),0),0); return empty*2 + max*2 - mono;
-  }
-  function startSolver(){ if(solverRunning) return; solverRunning=true; solverToggle.textContent='Arrêter l\'IA'; solverInterval=setInterval(()=>{ const mv=bestMove(); if(mv===null){ stopSolver(); return; } move(mv); },230); }
-  function stopSolver(){ solverRunning=false; solverToggle.textContent='Démarrer l\'IA'; clearInterval(solverInterval); }
-  document.addEventListener('keydown',e=>{ const map={ArrowUp:0, ArrowRight:1, ArrowDown:2, ArrowLeft:3}; if(map[e.key]!==undefined && document.getElementById('game2048').classList.contains('active')){ move(map[e.key]); } });
-  solverToggle.addEventListener('click',()=>{ solverRunning? stopSolver(): startSolver(); });
-  gameResetBtn.addEventListener('click',reset2048);
-  setupGrid(); reset2048();
-  refreshers.game2048 = render2048;
+  const gridsEqual=(a,b)=>a.every((row,r)=>row.every((v,c)=>v===b[r][c]));
+  refreshers.game2048=()=>{ init2048(); };
 
-  // --------------------------- TETRIS ---------------------------
-  const tetCanvas=document.getElementById('tetrisCanvas');
-  const tctx=tetCanvas.getContext('2d');
-  const tetrisScoreEl=document.getElementById('tetrisScore');
-  const tetrisHelpToggle=document.getElementById('tetrisHelp');
-  const tetrisResetBtn=document.getElementById('tetrisReset');
-  const tWidth=10, tHeight=20, cell=24;
+  // ---------- Tetris ----------
+  const tCanvas=document.getElementById('tetrisCanvas');
+  const tCtx=tCanvas.getContext('2d');
+  const tCols=10, tRows=20, tSize=32;
   const shapes={
     I:[[1,1,1,1]],
     O:[[1,1],[1,1]],
-    T:[[1,1,1],[0,1,0]],
+    T:[[0,1,0],[1,1,1]],
+    L:[[1,0],[1,0],[1,1]],
+    J:[[0,1],[0,1],[1,1]],
     S:[[0,1,1],[1,1,0]],
-    Z:[[1,1,0],[0,1,1]],
-    J:[[1,0,0],[1,1,1]],
-    L:[[0,0,1],[1,1,1]]
+    Z:[[1,1,0],[0,1,1]]
   };
-  let tBoard, current, tScore=0, tInterval;
-  function newPiece(){ const keys=Object.keys(shapes); const type=keys[Math.floor(Math.random()*keys.length)]; return {type, shape:shapes[type].map(r=>[...r]), x:3, y:0}; }
-  function resetTetris(){ tBoard=Array.from({length:tHeight},()=>Array(tWidth).fill(0)); current=newPiece(); tScore=0; updateTetrisScore(); clearInterval(tInterval); tInterval=setInterval(()=>tick(),430); drawTetris(); }
-  function collide(shape,x,y){ for(let r=0;r<shape.length;r++) for(let c=0;c<shape[0].length;c++) if(shape[r][c]){ const nx=x+c, ny=y+r; if(nx<0||nx>=tWidth||ny>=tHeight|| (ny>=0&&tBoard[ny][nx])) return true; } return false; }
-  function merge(){ current.shape.forEach((row,r)=> row.forEach((v,c)=>{ if(v && current.y+r>=0) tBoard[current.y+r][current.x+c]=1; })); }
-  function rotate(mat){ const n=mat.length,m=mat[0].length; const res=Array.from({length:m},()=>Array(n).fill(0)); for(let r=0;r<n;r++) for(let c=0;c<m;c++) res[c][n-1-r]=mat[r][c]; return res; }
-  function clearLines(){ let lines=0; tBoard=tBoard.filter(row=>row.some(v=>!v)); lines=tHeight - tBoard.length; while(tBoard.length<tHeight) tBoard.unshift(Array(tWidth).fill(0)); if(lines) tScore+=lines*100; }
-  function drawTetris(){ tctx.fillStyle='#0f1320'; tctx.fillRect(0,0,tetCanvas.width,tetCanvas.height); const renderCell=(x,y,color)=>{ tctx.fillStyle=color; tctx.fillRect(x*cell+2,y*cell+2,cell-4,cell-4); };
-    for(let y=0;y<tHeight;y++) for(let x=0;x<tWidth;x++) if(tBoard[y][x]) renderCell(x,y,'#7ad7f0');
-    current.shape.forEach((row,r)=> row.forEach((v,c)=>{ if(v){ renderCell(current.x+c,current.y+r,'#f25f5c'); }}));
-    if(tetrisHelpToggle.checked){ const ghost=findBestPlacement(); if(ghost){ ghost.shape.forEach((row,r)=>row.forEach((v,c)=>{ if(v){ tctx.strokeStyle='rgba(255,209,102,0.8)'; tctx.strokeRect((ghost.x+c)*cell+3,(ghost.y+r)*cell+3,cell-6,cell-6); } })); }
-    }
+  const colors=['#6ae3ff','#ffd166','#8a7dff','#6bffb2','#ff6b6b','#9b8cff','#7fffd4'];
+  let tBoard=createMatrix(tRows,tCols,0); let currentPiece=null; let dropCounter=0; let dropInterval=500; let lastTime=0; let tetrisId=null; let helpOn=true;
+  function createMatrix(r,c,val){ return Array.from({length:r},()=>Array(c).fill(val)); }
+  function createPiece(){ const keys=Object.keys(shapes); const shape=shapes[keys[rand(0,keys.length-1)]]; return {matrix:shape.map(row=>[...row]), pos:{x:3,y:0}, color:colors[rand(0,colors.length-1)]}; }
+  function collide(board,piece){ for(let y=0;y<piece.matrix.length;y++) for(let x=0;x<piece.matrix[y].length;x++){ if(piece.matrix[y][x]){ const ny=y+piece.pos.y, nx=x+piece.pos.x; if(nx<0||nx>=tCols||ny>=tRows|| (ny>=0 && board[ny][nx])) return true; } } return false; }
+  function merge(board,piece){ piece.matrix.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ board[y+piece.pos.y][x+piece.pos.x]=piece.color; } })); }
+  function rotate(matrix,dir){ const m=matrix.map((r,i)=>r.map((_,j)=>matrix[matrix.length-1-j][i])); return dir>0?m:m.map(r=>r.reverse()).reverse(); }
+  function sweep(){ let lines=0; for(let y=tRows-1;y>=0;y--){ if(tBoard[y].every(v=>v)){ tBoard.splice(y,1); tBoard.unshift(Array(tCols).fill(0)); lines++; y++; } } dropInterval=Math.max(120, 500 - lines*20); }
+  function drawTetris(){ tCtx.fillStyle='#0c0e15'; tCtx.fillRect(0,0,tCanvas.width,tCanvas.height); drawMatrix(tBoard,{x:0,y:0}); if(currentPiece){ drawMatrix(currentPiece.matrix,currentPiece.pos,currentPiece.color); if(helpOn){ const ghostPos=getGhostPosition(); drawMatrix(currentPiece.matrix,ghostPos,'rgba(255,255,255,0.25)',true); } } }
+  function drawMatrix(matrix,offset,color,ghost=false){ matrix.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ tCtx.fillStyle=color||tBoard[y+offset.y][x+offset.x]; const size= tCanvas.width/tCols; tCtx.globalAlpha=ghost?0.6:1; tCtx.fillRect((x+offset.x)*size,(y+offset.y)*size,size-1,size-1); tCtx.globalAlpha=1; } })); }
+  function getGhostPosition(){ const ghost={...currentPiece,pos:{...currentPiece.pos}}; while(!collide(tBoard,{...ghost,pos:{...ghost.pos,y:ghost.pos.y+1}})) ghost.pos.y++; return ghost.pos; }
+  function drop(time=0){ const delta=time-lastTime; lastTime=time; dropCounter+=delta; if(dropCounter>dropInterval){ currentPiece.pos.y++; if(collide(tBoard,currentPiece)){ currentPiece.pos.y--; merge(tBoard,currentPiece); sweep(); currentPiece=createPiece(); if(collide(tBoard,currentPiece)){ resetTetris(); return; } }
+      dropCounter=0; }
+    drawTetris(); tetrisId=requestAnimationFrame(drop);
   }
-  function findBestPlacement(){ let best=null, bestScore=-Infinity; const rotations=[current.shape]; for(let i=0;i<3;i++) rotations.push(rotate(rotations[rotations.length-1])); const unique=[]; rotations.forEach(shape=>{ if(!unique.some(s=>JSON.stringify(s)===JSON.stringify(shape))) unique.push(shape); });
-    for(const shape of unique){ for(let x=-2;x<tWidth;x++){ let y=0; while(!collide(shape,x,y)) y++; y--; if(y<0) continue; const score=scorePlacement(shape,x,y); if(score>bestScore){bestScore=score; best={shape,x,y};} } }
-    return best;
-  }
-  function scorePlacement(shape,x,y){ // heuristique classique
-    let temp=tBoard.map(r=>[...r]); shape.forEach((row,r)=>row.forEach((v,c)=>{ if(v) temp[y+r][x+c]=1; }));
-    let holes=0; for(let c=0;c<tWidth;c++){ let block=false; for(let r=0;r<tHeight;r++){ if(temp[r][c]) block=true; else if(block) holes++; }}
-    let heightSum=0; for(let r=0;r<tHeight;r++) for(let c=0;c<tWidth;c++) if(temp[r][c]) heightSum+= (tHeight-r);
-    return -holes*10 - heightSum*0.1;
-  }
-  function tick(){ if(!current) return; if(!collide(current.shape,current.x,current.y+1)) current.y++; else { merge(); clearLines(); current=newPiece(); if(collide(current.shape,current.x,current.y)) { clearInterval(tInterval); tScore-=50; } }
-    updateTetrisScore(); drawTetris(); }
-  function move(dx){ if(!collide(current.shape,current.x+dx,current.y)){ current.x+=dx; drawTetris(); }}
-  function drop(){ while(!collide(current.shape,current.x,current.y+1)) current.y++; tick(); }
-  function rotateCurrent(){ const rot=rotate(current.shape); if(!collide(rot,current.x,current.y)) current.shape=rot; drawTetris(); }
-  document.addEventListener('keydown',e=>{ if(!document.getElementById('tetris').classList.contains('active')) return; if(e.key==='ArrowLeft') move(-1); if(e.key==='ArrowRight') move(1); if(e.key==='ArrowUp') rotateCurrent(); if(e.key==='ArrowDown') tick(); if(e.code==='Space'){ e.preventDefault(); drop(); }});
-  function updateTetrisScore(){ tetrisScoreEl.textContent=`Score : ${tScore}`; }
-  tetrisResetBtn.addEventListener('click',resetTetris); resetTetris();
-  refreshers.tetris = drawTetris;
+  function movePiece(dir){ currentPiece.pos.x+=dir; if(collide(tBoard,currentPiece)) currentPiece.pos.x-=dir; }
+  function hardDrop(){ while(!collide(tBoard,{...currentPiece,pos:{...currentPiece.pos,y:currentPiece.pos.y+1}})) currentPiece.pos.y++; dropCounter=dropInterval+1; }
+  function rotatePiece(){ const rotated=rotate(currentPiece.matrix,1); const prev=currentPiece.matrix; currentPiece.matrix=rotated; if(collide(tBoard,currentPiece)) currentPiece.matrix=prev; }
+  document.addEventListener('keydown',(e)=>{
+    if(!document.getElementById('tetris').classList.contains('active')) return;
+    const key=e.key.toLowerCase();
+    if(['arrowleft','q'].includes(key)) movePiece(-1);
+    if(['arrowright','d'].includes(key)) movePiece(1);
+    if(['arrowup','z'].includes(key)) rotatePiece();
+    if(key===' '||key==='spacebar') hardDrop();
+    if(['arrowdown','s'].includes(key)) { currentPiece.pos.y++; if(collide(tBoard,currentPiece)) currentPiece.pos.y--; }
+    drawTetris();
+  });
+  function resetTetris(){ tBoard=createMatrix(tRows,tCols,0); currentPiece=createPiece(); dropCounter=0; dropInterval=500; cancelAnimationFrame(tetrisId); drop(); }
+  document.getElementById('resetTetris').addEventListener('click',resetTetris);
+  document.getElementById('helpToggle').addEventListener('click',(e)=>{ helpOn=!helpOn; e.target.textContent=`Aide IA : ${helpOn?'ON':'OFF'}`; });
+  refreshers.tetris=()=>{ if(!currentPiece){ resetTetris(); } };
 
-  // --------------------------- CHESS ---------------------------
+  // ---------- Échecs ----------
   const chessBoardEl=document.getElementById('chessBoard');
   const chessStatus=document.getElementById('chessStatus');
-  const chessResetBtn=document.getElementById('chessReset');
-  const pieces={r:'♜',n:'♞',b:'♝',q:'♛',k:'♚',p:'♟',R:'♖',N:'♘',B:'♗',Q:'♕',K:'♔',P:'♙'};
-  let chessBoard, whiteTurn=true, selected=null;
-  function initChess(){ chessBoard=[
-      ['r','n','b','q','k','b','n','r'],
-      ['p','p','p','p','p','p','p','p'],
-      Array(8).fill(''),Array(8).fill(''),Array(8).fill(''),Array(8).fill(''),
-      ['P','P','P','P','P','P','P','P'],
-      ['R','N','B','Q','K','B','N','R']
-    ]; whiteTurn=true; selected=null; renderChess(); updateChessStatus(); }
-  function renderChess(){ chessBoardEl.innerHTML=''; for(let r=0;r<8;r++){ for(let c=0;c<8;c++){ const sq=document.createElement('div'); sq.className=`square ${(r+c)%2?'dark':'light'}`; sq.dataset.pos=`${r}-${c}`; sq.textContent=pieces[chessBoard[r][c]]||''; chessBoardEl.appendChild(sq);} }
+  const pieces={ p:'♟', P:'♙', r:'♜', R:'♖', n:'♞', N:'♘', b:'♝', B:'♗', q:'♛', Q:'♕', k:'♚', K:'♔' };
+  const startPosition=[
+    ['r','n','b','q','k','b','n','r'],
+    ['p','p','p','p','p','p','p','p'],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    ['P','P','P','P','P','P','P','P'],
+    ['R','N','B','Q','K','B','N','R'],
+  ];
+  let board=startPosition.map(r=>[...r]);
+  let selected=null; let turn='white';
+
+  function renderChess(){
+    chessBoardEl.innerHTML='';
+    for(let r=0;r<8;r++){
+      for(let c=0;c<8;c++){
+        const cell=document.createElement('div');
+        cell.className='chess-cell ' + ((r+c)%2===0?'light':'dark');
+        cell.dataset.r=r; cell.dataset.c=c;
+        const val=board[r][c]; if(val) cell.textContent=pieces[val];
+        if(selected && selected.r===r && selected.c===c) cell.classList.add('highlight');
+        const moves= selected? legalMoves(selected.r,selected.c):[];
+        if(moves.some(m=>m.r===r&&m.c===c)) cell.classList.add('highlight');
+        chessBoardEl.appendChild(cell);
+      }
+    }
+    chessStatus.textContent = `Trait aux ${turn==='white'?'blancs':'noirs'}`;
   }
-  function updateChessStatus(){ chessStatus.textContent= whiteTurn? 'Au tour des blancs' : 'Au tour des noirs'; }
-  const isWhite=(p)=>p && p===p.toUpperCase();
-  const isBlack=(p)=>p && p===p.toLowerCase();
-  chessBoardEl.addEventListener('click', e=>{
-    const sq=e.target.closest('.square'); if(!sq) return; const [r,c]=sq.dataset.pos.split('-').map(Number); const piece=chessBoard[r][c];
-    if(selected){ const moves=legalMoves(...selected); if(moves.some(([mr,mc])=>mr===r&&mc===c)){ movePiece(selected,[r,c]); } selected=null; renderChess(); updateChessStatus(); return; }
-    if(piece && ((whiteTurn && isWhite(piece)) || (!whiteTurn && isBlack(piece)))){ selected=[r,c]; highlightMoves(legalMoves(r,c)); }
-  });
-  function highlightMoves(moves){ renderChess(); moves.forEach(([r,c])=>{ const sq=chessBoardEl.querySelector(`[data-pos="${r}-${c}"]`); if(sq) sq.classList.add('move-option'); }); if(selected){ const sq=chessBoardEl.querySelector(`[data-pos="${selected[0]}-${selected[1]}"]`); if(sq) sq.classList.add('highlight'); }
-  }
-  function movePiece([r,c],[r2,c2]){ chessBoard[r2][c2]=chessBoard[r][c]; chessBoard[r][c]=''; whiteTurn=!whiteTurn; }
-  function baseMoves(r,c){ const piece=chessBoard[r][c]; if(!piece) return []; const dirs=[]; const res=[]; const add=(rr,cc)=>{ if(rr<0||rr>=8||cc<0||cc>=8) return false; const target=chessBoard[rr][cc]; if(target && ((isWhite(piece)&&isWhite(target))||(isBlack(piece)&&isBlack(target)))) return false; res.push([rr,cc]); return !target; };
-    const side=isWhite(piece)?1:-1;
+  function legalMoves(r,c){
+    const piece=board[r][c]; if(!piece) return [];
+    const isWhite=piece===piece.toUpperCase(); if((isWhite && turn!=='white')||(!isWhite && turn!=='black')) return [];
+    const moves=[];
+    const push=(nr,nc)=>{ if(nr<0||nc<0||nr>=8||nc>=8) return; const target=board[nr][nc]; if(!target||isWhite!== (target===target.toUpperCase())) moves.push({r:nr,c:nc}); };
+    const slide=(dr,dc)=>{ let nr=r+dr,nc=c+dc; while(nr>=0&&nc>=0&&nr<8&&nc<8){ if(board[nr][nc]){ if(isWhite!==(board[nr][nc]===board[nr][nc].toUpperCase())) moves.push({r:nr,c:nc}); break;} moves.push({r:nr,c:nc}); nr+=dr; nc+=dc; } };
+    const knight=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];
     switch(piece.toLowerCase()){
       case 'p': {
-        const start=isWhite(piece)?6:1; if(!chessBoard[r-side]?.[c]){ add(r-side,c); if(r===start && !chessBoard[r-2*side]?.[c]) add(r-2*side,c); }
-        [[r-side,c-1],[r-side,c+1]].forEach(([rr,cc])=>{ if(rr>=0&&rr<8&&cc>=0&&cc<8){ const target=chessBoard[rr][cc]; if(target && ((isWhite(piece)&&isBlack(target))||(isBlack(piece)&&isWhite(target)))) res.push([rr,cc]); }});
-        break; }
-      case 'r': dirs.push([1,0],[-1,0],[0,1],[0,-1]); break;
-      case 'b': dirs.push([1,1],[1,-1],[-1,1],[-1,-1]); break;
-      case 'q': dirs.push([1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]); break;
-      case 'k': [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([dr,dc])=>add(r+dr,c+dc)); break;
-      case 'n': [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(([dr,dc])=>add(r+dr,c+dc)); break;
+        const dir=isWhite?-1:1; const start=isWhite?6:1;
+        if(!board[r+dir]?.[c]) moves.push({r:r+dir,c});
+        if(r===start && !board[r+dir]?.[c] && !board[r+2*dir]?.[c]) moves.push({r:r+2*dir,c});
+        [[dir,-1],[dir,1]].forEach(([dr,dc])=>{ const nr=r+dr,nc=c+dc; if(nr>=0&&nc>=0&&nr<8&&nc<8){ const target=board[nr][nc]; if(target && (target===target.toUpperCase())!==isWhite) moves.push({r:nr,c:nc}); }});
+        break;
+      }
+      case 'r': slide(1,0); slide(-1,0); slide(0,1); slide(0,-1); break;
+      case 'b': slide(1,1); slide(1,-1); slide(-1,1); slide(-1,-1); break;
+      case 'q': slide(1,0); slide(-1,0); slide(0,1); slide(0,-1); slide(1,1); slide(1,-1); slide(-1,1); slide(-1,-1); break;
+      case 'k': for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(dr||dc) push(r+dr,c+dc);} break;
+      case 'n': knight.forEach(([dr,dc])=>push(r+dr,c+dc)); break;
     }
-    if(['r','b','q'].includes(piece.toLowerCase())){ for(const [dr,dc] of dirs){ let rr=r+dr, cc=c+dc; while(add(rr,cc)) { rr+=dr; cc+=dc; } }
+    return moves;
+  }
+  chessBoardEl.addEventListener('click',(e)=>{
+    const cell=e.target.closest('.chess-cell'); if(!cell) return; const r=Number(cell.dataset.r), c=Number(cell.dataset.c);
+    if(selected){
+      const moves=legalMoves(selected.r,selected.c); if(moves.some(m=>m.r===r && m.c===c)){ board[r][c]=board[selected.r][selected.c]; board[selected.r][selected.c]=0; turn=turn==='white'?'black':'white'; selected=null; renderChess(); return; }
     }
-    return res;
-  }
-  function legalMoves(r,c){ const moves=baseMoves(r,c); return moves.filter(([rr,cc])=>!wouldExposeKing(r,c,rr,cc)); }
-  function findKing(white){ for(let r=0;r<8;r++) for(let c=0;c<8;c++) if(chessBoard[r][c]===(white?'K':'k')) return [r,c]; return null; }
-  function wouldExposeKing(r,c,rr,cc){ const piece=chessBoard[r][c]; const backup=chessBoard[rr][cc]; chessBoard[rr][cc]=piece; chessBoard[r][c]=''; const kingPos=findKing(isWhite(piece)); const danger=isInCheck(kingPos[0],kingPos[1], isWhite(piece)); chessBoard[r][c]=piece; chessBoard[rr][cc]=backup; return danger; }
-  function isInCheck(kr,kc,white){ for(let r=0;r<8;r++) for(let c=0;c<8;c++){ const p=chessBoard[r][c]; if(!p || (white?isWhite(p):isBlack(p))) continue; const moves=baseMoves(r,c); if(moves.some(([mr,mc])=>mr===kr && mc===kc)) return true; } return false; }
-  chessResetBtn.addEventListener('click',initChess); initChess();
-  refreshers.chess = renderChess;
+    if(board[r][c]){ selected={r,c}; renderChess(); }
+  });
+  document.getElementById('resetChess').addEventListener('click',()=>{ board=startPosition.map(r=>[...r]); turn='white'; selected=null; renderChess(); });
+  refreshers.chess=()=>{ if(!chessBoardEl.childElementCount) renderChess(); };
 
-  // --------------------------- AVATAR ---------------------------
-  const avatarCanvas=document.getElementById('avatarCanvas');
-  const actx=avatarCanvas.getContext('2d');
-  const avatarGenerate=document.getElementById('avatarGenerate');
-  const avatarDownload=document.getElementById('avatarDownload');
-  function generateAvatar(){ const colors=['#f25f5c','#7ad7f0','#ffd166','#9aa2b1']; actx.fillStyle='#0f1320'; actx.fillRect(0,0,avatarCanvas.width,avatarCanvas.height); for(let i=0;i<6;i++){ const size=Math.random()*120+30; const x=Math.random()*avatarCanvas.width; const y=Math.random()*avatarCanvas.height; actx.fillStyle=colors[Math.floor(Math.random()*colors.length)] + '88'; actx.beginPath(); actx.arc(x,y,size,0,Math.PI*2); actx.fill(); }
-    // visage abstrait
-    actx.fillStyle='rgba(255,255,255,0.1)'; actx.fillRect(40,40,160,160);
-    actx.fillStyle=colors[Math.floor(Math.random()*colors.length)]; actx.beginPath(); actx.arc(90,110,18,0,Math.PI*2); actx.arc(150,110,18,0,Math.PI*2); actx.fill();
-    actx.strokeStyle='#e8ecf1'; actx.lineWidth=4; actx.beginPath(); actx.arc(120,150,36,0,Math.PI); actx.stroke();
-  }
-  avatarGenerate.addEventListener('click',generateAvatar);
-  avatarDownload.addEventListener('click',()=>{ const link=document.createElement('a'); link.download='avatar.png'; link.href=avatarCanvas.toDataURL('image/png'); link.click(); });
-  generateAvatar();
-  refreshers.avatar = generateAvatar;
+  // ---------- Tri visuel ----------
+  const barsEl=document.getElementById('bars');
+  const algoSelect=document.getElementById('algoSelect');
+  const shuffleBtn=document.getElementById('shuffleBars');
+  const startSortBtn=document.getElementById('startSort');
+  const pauseSortBtn=document.getElementById('pauseSort');
+  let barValues=[]; let sortGen=null; let sortInterval=null; let paused=false;
 
-  // --------------------------- SORTING ---------------------------
-  const sortCanvas=document.getElementById('sortCanvas');
-  const sortCtx=sortCanvas.getContext('2d');
-  const sortAlgo=document.getElementById('sortAlgo');
-  const sortShuffle=document.getElementById('sortShuffle');
-  const sortStart=document.getElementById('sortStart');
-  const sortSpeed=document.getElementById('sortSpeed');
-  let arr=[], steps=[], stepIndex=0, sorting=false, sortTimer;
-  function initArray(){ arr=Array.from({length:60},()=>Math.random()); steps=[]; stepIndex=0; drawArray(); }
-  function drawArray(highlight=[]){ sortCtx.fillStyle='#0f1320'; sortCtx.fillRect(0,0,sortCanvas.width,sortCanvas.height); const w=sortCanvas.width/arr.length; arr.forEach((v,i)=>{ sortCtx.fillStyle= highlight.includes(i)? '#f25f5c' : '#7ad7f0'; sortCtx.fillRect(i*w+1, sortCanvas.height - v*sortCanvas.height, w-2, v*sortCanvas.height); }); }
-  function recordSteps(algo){ steps=[]; const a=[...arr]; const swap=(i,j)=>{ [a[i],a[j]]=[a[j],a[i]]; steps.push({a:[...a], h:[i,j]}); };
-    if(algo==='bubble'){ for(let i=0;i<a.length;i++) for(let j=0;j<a.length-i-1;j++){ if(a[j]>a[j+1]) swap(j,j+1); else steps.push({a:[...a],h:[j,j+1]}); } }
-    else if(algo==='insertion'){ for(let i=1;i<a.length;i++){ let j=i; while(j>0&&a[j]<a[j-1]){ swap(j,j-1); j--; } steps.push({a:[...a],h:[j]}); } }
-    else if(algo==='merge'){ const mergeSort=(l,r)=>{ if(r-l<=1) return; const m=Math.floor((l+r)/2); mergeSort(l,m); mergeSort(m,r); const left=a.slice(l,m), right=a.slice(m,r); let i=0,j=0; for(let k=l;k<r;k++){ if(j>=right.length || (i<left.length && left[i]<=right[j])) a[k]=left[i++]; else a[k]=right[j++]; steps.push({a:[...a],h:[k]}); } }; mergeSort(0,a.length); }
-    else if(algo==='quick'){ const qs=(l,r)=>{ if(l>=r) return; let i=l, j=r, pivot=a[Math.floor((l+r)/2)]; while(i<=j){ while(a[i]<pivot) i++; while(a[j]>pivot) j--; if(i<=j){ swap(i,j); i++; j--; } steps.push({a:[...a],h:[i,j]}); } if(l<j) qs(l,j); if(i<r) qs(i,r); }; qs(0,a.length-1); }
-    steps.unshift({a:[...arr],h:[]}); arr=[...a];
+  function initBars(){ barValues=Array.from({length:40},()=>rand(10,220)); renderBars(); }
+  function renderBars(active=[]) {
+    barsEl.innerHTML='';
+    barValues.forEach((v,i)=>{
+      const bar=document.createElement('div');
+      bar.className='bar';
+      if(active.includes(i)) bar.classList.add('active');
+      bar.style.height=`${v}px`;
+      barsEl.appendChild(bar);
+    });
   }
-  function playSteps(){ sorting=!sorting; if(!sorting){ clearInterval(sortTimer); return; } const speed=+sortSpeed.value; sortTimer=setInterval(()=>{ if(stepIndex>=steps.length) { clearInterval(sortTimer); sorting=false; return; } const step=steps[stepIndex++]; drawArray(step.h); arr=[...step.a]; }, speed);
-  }
-  sortShuffle.addEventListener('click',()=>{ sorting=false; clearInterval(sortTimer); initArray(); });
-  sortStart.addEventListener('click',()=>{ recordSteps(sortAlgo.value); stepIndex=0; playSteps(); });
-  sortSpeed.addEventListener('input',()=>{ if(sorting){ clearInterval(sortTimer); playSteps(); }});
-  initArray();
-  refreshers.sorting = () => drawArray();
+  function* bubbleSort(){ let arr=barValues; let n=arr.length; for(let i=0;i<n;i++) for(let j=0;j<n-i-1;j++){ renderBars([j,j+1]); yield; if(arr[j]>arr[j+1]) [arr[j],arr[j+1]]=[arr[j+1],arr[j]]; } renderBars(); }
+  function* insertionSort(){ let arr=barValues; for(let i=1;i<arr.length;i++){ let key=arr[i]; let j=i-1; while(j>=0 && arr[j]>key){ renderBars([j,j+1]); yield; arr[j+1]=arr[j]; j--; } arr[j+1]=key; } renderBars(); }
+  function* mergeSort(arr=barValues, l=0, r=barValues.length-1){ if(l>=r) return; const m=Math.floor((l+r)/2); yield* mergeSort(arr,l,m); yield* mergeSort(arr,m+1,r); const left=arr.slice(l,m+1), right=arr.slice(m+1,r+1); let i=0,j=0,k=l; while(i<left.length||j<right.length){ renderBars([k]); yield; if(j>=right.length || (i<left.length && left[i]<=right[j])) arr[k++]=left[i++]; else arr[k++]=right[j++]; } }
+  function* quickSort(l=0,r=barValues.length-1){ if(l>=r) return; let pivot=barValues[r], i=l; for(let j=l;j<r;j++){ renderBars([j,r]); yield; if(barValues[j]<pivot){ [barValues[i],barValues[j]]=[barValues[j],barValues[i]]; i++; } } [barValues[i],barValues[r]]=[barValues[r],barValues[i]]; yield* quickSort(l,i-1); yield* quickSort(i+1,r); }
 
-  // --------------------------- TURING MACHINE ---------------------------
-  const turingTapeEl=document.getElementById('turingTape');
-  const turingStatus=document.getElementById('turingStatus');
-  const turingStepBtn=document.getElementById('turingStep');
-  const turingRunBtn=document.getElementById('turingRun');
-  const turingResetBtn=document.getElementById('turingReset');
-  let tape=[], head=5, state='q0', turingInterval;
-  const rules={ // incrément binaire sur 6 bits
-    q0:{ '1':['1','L','q0'], '0':['0','L','q0'], '_':['_', 'R','q1'] },
-    q1:{ '1':['0','L','q1'], '0':['1','H','halt'], '_':['1','H','halt'] }
-  };
-  function initTape(){ tape=Array(12).fill('0'); head=tape.length-1; tape[head]='1'; state='q0'; renderTape(); updateTuringStatus(); }
-  function renderTape(){ turingTapeEl.innerHTML=''; tape.forEach((val,i)=>{ const cell=document.createElement('div'); cell.className='turing-cell'; if(i===head) cell.classList.add('active'); cell.textContent=val; turingTapeEl.appendChild(cell); }); }
-  function stepTuring(){ const symbol=tape[head] ?? '_'; const trans=rules[state]?.[symbol]; if(!trans) { state='halt'; updateTuringStatus(); return; } const [write, move, next]=trans; tape[head]=write; if(move==='R') head=Math.min(tape.length-1, head+1); else if(move==='L') head=Math.max(0, head-1); state=next; renderTape(); updateTuringStatus(); if(state==='halt') stopTuring(); }
-  function updateTuringStatus(){ turingStatus.textContent=`État : ${state}`; }
-  function runTuring(){ stopTuring(); turingInterval=setInterval(stepTuring,400); }
-  function stopTuring(){ clearInterval(turingInterval); }
-  turingStepBtn.addEventListener('click',stepTuring);
-  turingRunBtn.addEventListener('click',()=>{ if(state==='halt'){ initTape(); } runTuring(); });
-  turingResetBtn.addEventListener('click',initTape);
-  initTape();
-  refreshers.turing = renderTape;
+  function startSort(){ if(sortInterval) clearInterval(sortInterval); const algo=algoSelect.value; if(algo==='bubble') sortGen=bubbleSort(); if(algo==='insertion') sortGen=insertionSort(); if(algo==='merge') sortGen=mergeSort(); if(algo==='quick') sortGen=quickSort(); sortInterval=setInterval(()=>{ const step=sortGen.next(); if(step.done){ clearInterval(sortInterval); renderBars(); } },80); }
+  shuffleBtn.addEventListener('click',()=>{ initBars(); });
+  startSortBtn.addEventListener('click',()=>{ paused=false; startSort(); });
+  pauseSortBtn.addEventListener('click',()=>{ if(sortInterval){ clearInterval(sortInterval); sortInterval=null; } else startSort(); });
+  refreshers.sorting=()=>{ initBars(); };
 
-  // --------------------------- MAZE SOLVER ---------------------------
+  // ---------- Labyrinthe ----------
   const mazeCanvas=document.getElementById('mazeCanvas');
-  const mctx=mazeCanvas.getContext('2d');
-  const mazeAlgo=document.getElementById('mazeAlgo');
-  const mazeGenerate=document.getElementById('mazeGenerate');
-  const mazeStart=document.getElementById('mazeStart');
-  const mazeReset=document.getElementById('mazeReset');
-  const mSize=21; let mazeGrid=[], mStart={x:1,y:1}, mGoal={x:mSize-2,y:mSize-2}, frontier=[], visitedSet, mazeTimer, running=false;
-  function generateMaze(){ mazeGrid=Array.from({length:mSize},()=>Array(mSize).fill(1)); const carve=(x,y)=>{ mazeGrid[y][x]=0; const dirs=[[2,0],[-2,0],[0,2],[0,-2]].sort(()=>Math.random()-0.5); for(const[dX,dY] of dirs){ const nx=x+dX, ny=y+dY; if(nx>0&&ny>0&&nx<mSize-1&&ny<mSize-1 && mazeGrid[ny][nx]===1){ mazeGrid[ny][nx]=0; mazeGrid[y+dY/2][x+dX/2]=0; carve(nx,ny); } } }; carve(1,1); drawMaze(); visitedSet=new Set(); frontier=[mStart]; }
-  function drawMaze(path=[]){ const cs=mazeCanvas.width/mSize; mctx.fillStyle='#0f1320'; mctx.fillRect(0,0,mazeCanvas.width,mazeCanvas.height); for(let y=0;y<mSize;y++) for(let x=0;x<mSize;x++){ if(mazeGrid[y][x]){ mctx.fillStyle='#111'; mctx.fillRect(x*cs,y*cs,cs,cs); }} mctx.fillStyle='#7ad7f0'; mctx.fillRect(mGoal.x*cs,mGoal.y*cs,cs,cs); mctx.fillStyle='#f25f5c'; mctx.fillRect(mStart.x*cs,mStart.y*cs,cs,cs); path.forEach(p=>{ mctx.fillStyle='rgba(255,209,102,0.7)'; mctx.fillRect(p.x*cs+2,p.y*cs+2,cs-4,cs-4); }); }
-  function neighbors(x,y){ return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>({x:x+dx,y:y+dy})).filter(p=>p.x>=0&&p.y>=0&&p.x<mSize&&p.y<mSize&&!mazeGrid[p.y][p.x]); }
-  function stepMaze(){ if(!frontier.length){ stopMaze(); return; } const algo=mazeAlgo.value; let node; if(algo==='dfs') node=frontier.pop(); else node=frontier.shift(); if(visitedSet.has(`${node.x},${node.y}`)) return; visitedSet.add(`${node.x},${node.y}`); if(node.x===mGoal.x&&node.y===mGoal.y){ drawMaze(reconstructPath(node)); stopMaze(); return; }
-    neighbors(node.x,node.y).forEach(nb=>{ if(!visitedSet.has(`${nb.x},${nb.y}`)){ nb.prev=node; if(algo==='astar'){ nb.f=manhattan(nb,mGoal); insertPriority(nb); } else frontier.push(nb); } });
-    drawMaze(); visitedSet.forEach(key=>{ const [x,y]=key.split(',').map(Number); mctx.fillStyle='rgba(122,215,240,0.2)'; const cs=mazeCanvas.width/mSize; mctx.fillRect(x*cs+3,y*cs+3,cs-6,cs-6); });
-  }
-  function insertPriority(node){ let i=0; while(i<frontier.length && (frontier[i].f??0) < node.f) i++; frontier.splice(i,0,node); }
-  const manhattan=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
-  function reconstructPath(node){ const path=[]; let n=node; while(n){ path.push({x:n.x,y:n.y}); n=n.prev; } return path; }
-  function runMaze(){ stopMaze(); running=true; mazeTimer=setInterval(stepMaze,120); }
-  function stopMaze(){ running=false; clearInterval(mazeTimer); }
-  mazeGenerate.addEventListener('click',generateMaze);
-  mazeStart.addEventListener('click',()=>{ running? stopMaze(): runMaze(); });
-  mazeReset.addEventListener('click',()=>{ stopMaze(); generateMaze(); });
-  generateMaze();
-  refreshers.maze = () => drawMaze();
+  const mCtx=mazeCanvas.getContext('2d');
+  const mazeSize=21; let mazeGrid=createMatrix(mazeSize,mazeSize,1); let start={x:1,y:1}; let goal={x:mazeSize-2,y:mazeSize-2}; let mazeTimer=null; let frontier=[]; let visited=new Map(); let path=[]; let algo='bfs';
 
-  // --------------------------- SPHERE 3D ---------------------------
+  function generateMaze(){ mazeGrid=createMatrix(mazeSize,mazeSize,1); for(let y=1;y<mazeSize-1;y+=2){ for(let x=1;x<mazeSize-1;x+=2){ mazeGrid[y][x]=0; const dirs=[[0,2],[0,-2],[2,0],[-2,0]]; const [dx,dy]=dirs[rand(0,3)]; if(y+dy>0&&y+dy<mazeSize-1&&x+dx>0&&x+dx<mazeSize-1){ mazeGrid[y+dy/2][x+dx/2]=0; mazeGrid[y+dy][x+dx]=0; } } }
+    drawMaze(); }
+  function drawMaze(){ const size=mazeCanvas.width/mazeSize; mCtx.fillStyle='#0c0e15'; mCtx.fillRect(0,0,mazeCanvas.width,mazeCanvas.height); for(let y=0;y<mazeSize;y++) for(let x=0;x<mazeSize;x++){ if(mazeGrid[y][x]){ mCtx.fillStyle='#161925'; mCtx.fillRect(x*size,y*size,size,size); } }
+    mCtx.fillStyle='#6bffb2'; mCtx.fillRect(start.x*size,start.y*size,size,size);
+    mCtx.fillStyle='#ff6b6b'; mCtx.fillRect(goal.x*size,goal.y*size,size,size);
+    frontier.forEach(({x,y})=>{ mCtx.fillStyle='rgba(106,227,255,0.5)'; mCtx.fillRect(x*size,y*size,size,size); });
+    path.forEach(({x,y})=>{ mCtx.fillStyle='rgba(255,209,102,0.8)'; mCtx.fillRect(x*size,y*size,size,size); });
+  }
+  function startSearch(){ frontier=[{...start,g:0,f:heuristic(start)}]; visited=new Map([[`${start.x},${start.y}`,0]]); path=[]; clearInterval(mazeTimer); mazeTimer=setInterval(stepMaze,80); }
+  function neighbors(node){ const dirs=[[1,0],[-1,0],[0,1],[0,-1]]; return dirs.map(([dx,dy])=>({x:node.x+dx,y:node.y+dy})).filter(({x,y})=>x>=0&&y>=0&&x<mazeSize&&y<mazeSize&&!mazeGrid[y][x]); }
+  function heuristic(n){ return Math.abs(goal.x-n.x)+Math.abs(goal.y-n.y); }
+  function stepMaze(){ if(!frontier.length){ clearInterval(mazeTimer); return; }
+    if(algo==='astar') frontier.sort((a,b)=>a.f-b.f);
+    const current = algo==='dfs'? frontier.pop(): frontier.shift();
+    if(current.x===goal.x && current.y===goal.y){ path=reconstruct(current); clearInterval(mazeTimer); drawMaze(); return; }
+    neighbors(current).forEach(n=>{ const key=`${n.x},${n.y}`; const g=current.g+1; if(!visited.has(key) || g<visited.get(key)){ visited.set(key,g); frontier.push({...n, g, f:g+heuristic(n), parent: current}); } });
+    drawMaze();
+  }
+  function reconstruct(end){ const result=[]; let node=end; while(node){ result.push({x:node.x,y:node.y}); node=node.parent; } return result; }
+  document.getElementById('genMaze').addEventListener('click',generateMaze);
+  document.getElementById('startMaze').addEventListener('click',()=>{ algo=document.getElementById('mazeAlgo').value; startSearch(); });
+  document.getElementById('resetMaze').addEventListener('click',()=>{ clearInterval(mazeTimer); frontier=[]; visited=new Set(); path=[]; drawMaze(); });
+  refreshers.maze=()=>{ generateMaze(); };
+
+  // ---------- Sphère 3D ----------
   const sphereContainer=document.getElementById('sphereContainer');
-  const wireframeToggle=document.getElementById('wireframeToggle');
-  const renderer=new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setSize(sphereContainer.clientWidth, sphereContainer.clientHeight);
-  sphereContainer.appendChild(renderer.domElement);
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(45, sphereContainer.clientWidth/sphereContainer.clientHeight, 0.1, 1000); camera.position.z=3;
-  const light=new THREE.PointLight(0xffffff,1); light.position.set(5,5,5); scene.add(light);
-  const geometry=new THREE.SphereGeometry(1,48,32);
-  const material=new THREE.MeshStandardMaterial({ color:0x7ad7f0, emissive:0x112233, metalness:0.3, roughness:0.2 });
-  const sphere=new THREE.Mesh(geometry,material); scene.add(sphere);
-  const resizeSphere=()=>{ const w=Math.max(1,sphereContainer.clientWidth); const h=Math.max(1,sphereContainer.clientHeight); renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); };
-  const controls={ rotating:false, lastX:0, lastY:0 };
-  sphereContainer.addEventListener('mousedown',e=>{ controls.rotating=true; controls.lastX=e.clientX; controls.lastY=e.clientY; });
-  window.addEventListener('mouseup',()=>controls.rotating=false);
-  window.addEventListener('mousemove',e=>{ if(!controls.rotating) return; const dx=e.clientX-controls.lastX; const dy=e.clientY-controls.lastY; controls.lastX=e.clientX; controls.lastY=e.clientY; sphere.rotation.y+=dx*0.01; sphere.rotation.x+=dy*0.01; });
-  sphereContainer.addEventListener('wheel',e=>{ camera.position.z+=e.deltaY*0.002; camera.position.z=Math.min(6,Math.max(2,camera.position.z)); });
-  wireframeToggle.addEventListener('change',()=>{ material.wireframe=wireframeToggle.checked; });
-  function animate(){ requestAnimationFrame(animate); sphere.rotation.y+=0.003; renderer.render(scene,camera); }
-  window.addEventListener('resize', resizeSphere);
-  refreshers.sphere = resizeSphere;
-  animate();
+  let renderer,scene,camera,controls,sphereMesh,wireframe=false; let animId;
+
+  function initSphere(){
+    const width=sphereContainer.clientWidth; const height=sphereContainer.clientHeight || 420;
+    renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(width,height); renderer.setPixelRatio(window.devicePixelRatio||1);
+    sphereContainer.innerHTML=''; sphereContainer.appendChild(renderer.domElement);
+    scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1117);
+    camera=new THREE.PerspectiveCamera(45,width/height,0.1,100); camera.position.set(0,0,4);
+    controls=new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping=true; controls.dampingFactor=0.05;
+    const light=new THREE.PointLight(0xffffff,1.2); light.position.set(5,5,5); scene.add(light); scene.add(new THREE.AmbientLight(0x404040));
+    const geo=new THREE.SphereGeometry(1,48,32);
+    const mat=new THREE.MeshStandardMaterial({color:0x6ae3ff, metalness:0.1, roughness:0.3, wireframe});
+    sphereMesh=new THREE.Mesh(geo,mat); scene.add(sphereMesh);
+    animateSphere();
+  }
+  function animateSphere(){ animId=requestAnimationFrame(animateSphere); sphereMesh.rotation.y+=0.003; controls.update(); renderer.render(scene,camera); }
+  document.getElementById('toggleWire').addEventListener('click',()=>{ wireframe=!wireframe; if(sphereMesh) sphereMesh.material.wireframe=wireframe; });
+  document.getElementById('resetSphere').addEventListener('click',()=>{ cancelAnimationFrame(animId); initSphere(); });
+  window.addEventListener('resize',()=>{ if(!sphereContainer.contains(renderer?.domElement)) return; const w=sphereContainer.clientWidth; const h=sphereContainer.clientHeight||420; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); });
+  refreshers.sphere=()=>{ if(!renderer) initSphere(); };
+
+  // Initial refreshers for first view
+  refreshers.hub = ()=>{};
 })();
