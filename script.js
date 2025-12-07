@@ -141,6 +141,7 @@
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) if (cfBoard[r][c] !== EMPTY) renderPiece(r, c, cfBoard[r][c], animate);
     }
+    return null;
   }
   function renderPiece(row, col, player, animate = true) {
     const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
@@ -211,6 +212,9 @@
       for(const m of moves){ const {nextBoard,row}=applyMove(state,m,player); const val=minimax(nextBoard,depth-1,true,alpha,beta,-player,row,m,perspective); best=Math.min(best,val); beta=Math.min(beta,val); if(beta<=alpha) break; }
       return best;
     }
+    // fallback: choisir un déplacement sûr
+    for(const[dX,dY] of dirs){ const nx=snake[0].x+dX, ny=snake[0].y+dY; if(nx>=0&&ny>=0&&nx<gridSize&&ny<gridSize&&!snake.some(p=>p.x===nx&&p.y===ny)) return {x:dX,y:dY}; }
+    return direction;
   }
   function getLegalMoves(state){ return Array.from({length:COLS},(_,c)=>c).filter(c=>state[0][c]===EMPTY); }
   function applyMove(state,col,player){ const newBoard=state.map(r=>[...r]); let row=null; for(let r=ROWS-1;r>=0;r--){ if(newBoard[r][col]===EMPTY){ newBoard[r][col]=player; row=r; break; } } return {nextBoard:newBoard,row}; }

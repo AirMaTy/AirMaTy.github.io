@@ -144,6 +144,136 @@
             <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
           </div>
         </div>
+      </div>
+      <div class="status"><div id="turingStatus" class="badge">État : q0</div></div>
+      <div class="turing-row" id="turingTape"></div>
+    </section>
+
+      <section class="activity" id="snake" aria-label="Snake">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Réactif</p>
+            <h2>Snake – IA ou ZQSD</h2>
+            <p class="muted">Alternez entre serpent autonome et contrôle manuel (ZQSD ou flèches).</p>
+          </div>
+          <div class="controls">
+            <button id="snakeManual" class="ghost">Mode manuel</button>
+            <button id="snakeAuto">Mode IA</button>
+            <button id="snakeReset">Rejouer</button>
+          </div>
+        </div>
+        <canvas id="snakeCanvas" width="420" height="420" class="panel"></canvas>
+        <p class="muted small">Contrôles : Z/Q/S/D ou flèches. Rouge = serpent, vert = pomme.</p>
+      </section>
+
+      <section class="activity" id="game2048" aria-label="2048">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Glisser</p>
+            <h2>2048</h2>
+            <p class="muted">Jouez au clavier ou laissez l'IA tenter sa chance.</p>
+          </div>
+          <div class="controls">
+            <button id="ai2048" class="ghost">IA</button>
+            <button id="stopAI2048">Arrêter IA</button>
+            <button id="reset2048">Recommencer</button>
+          </div>
+        </div>
+        <div class="grid-2048" id="grid2048"></div>
+        <div class="status-text" id="status2048"></div>
+      </section>
+
+      <section class="activity" id="tetris" aria-label="Tetris">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Empiler</p>
+            <h2>Tetris avec aide IA</h2>
+            <p class="muted">Contrôles clavier, fantôme indiquant le placement conseillé.</p>
+          </div>
+          <div class="controls">
+            <button id="helpToggle" class="ghost">Aide IA : ON</button>
+            <button id="resetTetris">Rejouer</button>
+          </div>
+        </div>
+        <canvas id="tetrisCanvas" width="320" height="640" class="panel"></canvas>
+        <p class="muted small">Touches : flèches ou ZQSD pour déplacer/rotation (Z=haut). Barre espace pour chute rapide.</p>
+      </section>
+
+      <section class="activity" id="chess" aria-label="Échecs">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Stratégie</p>
+            <h2>Échecs locaux</h2>
+            <p class="muted">Sélectionnez une pièce pour voir ses coups légaux. Pas d'IA.</p>
+          </div>
+          <div class="controls">
+            <button id="resetChess">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="chess-wrapper">
+          <div id="chessBoard" class="chess-board"></div>
+          <div class="status-text" id="chessStatus">Trait aux blancs</div>
+        </div>
+      </section>
+
+      <section class="activity" id="sorting" aria-label="Tri visuel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Algorithmique</p>
+            <h2>Visualiseur de tri</h2>
+            <p class="muted">Choisissez un algorithme et observez les comparaisons.</p>
+          </div>
+          <div class="controls">
+            <select id="algoSelect">
+              <option value="bubble">Bulles</option>
+              <option value="insertion">Insertion</option>
+              <option value="merge">Fusion</option>
+              <option value="quick">Rapide</option>
+            </select>
+            <button id="shuffleBars" class="ghost">Mélanger</button>
+            <button id="startSort">Lancer</button>
+            <button id="pauseSort">Pause</button>
+          </div>
+        </div>
+        <div class="bars" id="bars"></div>
+      </section>
+
+      <section class="activity" id="maze" aria-label="IA Labyrinthe">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Recherche</p>
+            <h2>IA de labyrinthe</h2>
+            <p class="muted">Générez un labyrinthe et lancez BFS, DFS ou A* en animation.</p>
+          </div>
+          <div class="controls">
+            <select id="mazeAlgo">
+              <option value="bfs">BFS</option>
+              <option value="dfs">DFS</option>
+              <option value="astar">A*</option>
+            </select>
+            <button id="genMaze" class="ghost">Nouveau labyrinthe</button>
+            <button id="startMaze">Démarrer</button>
+            <button id="resetMaze">Réinitialiser</button>
+          </div>
+        </div>
+        <canvas id="mazeCanvas" width="520" height="520" class="panel"></canvas>
+        <p class="muted small">Vert = départ, rouge = arrivée, bleu = exploré.</p>
+      </section>
+
+      <section class="activity" id="sphere" aria-label="Sphère 3D">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Immersif</p>
+            <h2>Sphère 3D interactive</h2>
+            <p class="muted">Rotation libre, zoom et éclairage doux.</p>
+          </div>
+          <div class="controls">
+            <button id="toggleWire" class="ghost">Mode filaire</button>
+            <button id="resetSphere">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="sphere-wrapper panel" id="sphereContainer"></div>
+        <p class="muted small">Astuce : cliquez-glissez pour orienter, molette pour zoomer.</p>
       </section>
 
       <section class="activity" id="snake" aria-label="Snake">
