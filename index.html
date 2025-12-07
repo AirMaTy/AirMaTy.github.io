@@ -13,22 +13,99 @@
       <p class="eyebrow">Expériences interactives • IA & Jeux classiques</p>
       <h1>Hub Ludique Sombre</h1>
       <p class="subtitle">Retrouvez Puissance 4 et une collection d'activités animées partageant la même esthétique minimaliste.</p>
-      <div class="hub-buttons" id="hubButtons" aria-label="Sélection d'activités">
-        <button class="tile" data-target="connect4">Puissance 4</button>
-        <button class="tile" data-target="snake">Snake (IA & manuel)</button>
-        <button class="tile" data-target="game2048">2048 (IA & manuel)</button>
-        <button class="tile" data-target="tetris">Tetris (aide IA)</button>
-        <button class="tile" data-target="chess">Échecs 2 joueurs</button>
-        <button class="tile" data-target="avatar">Générateur d'avatar</button>
-        <button class="tile" data-target="sorting">Visualiseur de tri</button>
-        <button class="tile" data-target="turing">Machine de Turing</button>
-        <button class="tile" data-target="maze">IA de labyrinthe</button>
-        <button class="tile" data-target="sphere">Sphere 3D</button>
+      <div class="hero-actions">
+        <button class="pill" data-target="hub">Voir le hub</button>
+        <button class="pill ghost" data-target="connect4">Accès rapide : Puissance 4</button>
       </div>
     </div>
   </header>
 
   <main id="activities">
+    <section class="activity active" id="hub" aria-label="Accueil du hub">
+      <div class="hub-grid">
+        <article class="card">
+          <div>
+            <p class="eyebrow">Classique</p>
+            <h3>Puissance 4 avec IA</h3>
+            <p class="muted">Grille 7x6, mode IA imbattable ou PvP, conseils en un clic.</p>
+          </div>
+          <button class="card-btn" data-target="connect4">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Réactif</p>
+            <h3>Snake</h3>
+            <p class="muted">Serpent IA autonome ou contrôle clavier, rejouer instantanément.</p>
+          </div>
+          <button class="card-btn" data-target="snake">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Glisser</p>
+            <h3>2048</h3>
+            <p class="muted">Solver en direct ou déplacement manuel fluide sur 4x4.</p>
+          </div>
+          <button class="card-btn" data-target="game2048">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Empiler</p>
+            <h3>Tetris</h3>
+            <p class="muted">Chute classique avec aide IA qui surligne le meilleur placement.</p>
+          </div>
+          <button class="card-btn" data-target="tetris">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Stratégie</p>
+            <h3>Échecs locaux</h3>
+            <p class="muted">Plateau 8x8, coups légaux uniquement, tours surlignés.</p>
+          </div>
+          <button class="card-btn" data-target="chess">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Créatif</p>
+            <h3>Avatar IA</h3>
+            <p class="muted">Générateur d'icônes abstraites téléchargeables.</p>
+          </div>
+          <button class="card-btn" data-target="avatar">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Algorithmique</p>
+            <h3>Tri visuel</h3>
+            <p class="muted">Bulles, insertion, fusion ou rapide, avec surlignage.</p>
+          </div>
+          <button class="card-btn" data-target="sorting">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Théorique</p>
+            <h3>Machine de Turing</h3>
+            <p class="muted">Automate incrémental visualisé pas à pas.</p>
+          </div>
+          <button class="card-btn" data-target="turing">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Recherche</p>
+            <h3>IA Labyrinthe</h3>
+            <p class="muted">BFS, DFS ou A* animés sur un labyrinthe généré.</p>
+          </div>
+          <button class="card-btn" data-target="maze">Lancer</button>
+        </article>
+        <article class="card">
+          <div>
+            <p class="eyebrow">Immersif</p>
+            <h3>Sphère 3D</h3>
+            <p class="muted">Rotation libre, zoom et mode filaire optionnel.</p>
+          </div>
+          <button class="card-btn" data-target="sphere">Lancer</button>
+        </article>
+      </div>
+    </section>
+
     <section class="activity" id="connect4" aria-label="Puissance 4">
       <div class="section-head">
         <div>
@@ -37,6 +114,7 @@
           <p class="muted">Choisissez votre mode, demandez un conseil instantané, ou jouez à deux.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <label>Mode
             <select id="mode">
               <option value="ai">Joueur vs IA (imbattable)</option>
@@ -75,6 +153,7 @@
           <p class="muted">Alternez entre un serpent autonome et un contrôle manuel au clavier.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <button id="snakeManual" class="ghost">Mode manuel</button>
           <button id="snakeAuto">Mode IA</button>
           <button id="snakeReset">Rejouer</button>
@@ -92,6 +171,7 @@
           <p class="muted">L'IA joue en continu ou laissez votre intuition faire le reste.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <button id="solverToggle">Démarrer l'IA</button>
           <button id="gameReset">Réinitialiser</button>
         </div>
@@ -108,6 +188,7 @@
           <p class="muted">L'IA suggère la meilleure position. Contrôles : flèches, barre espace pour chute rapide.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <label class="switch">Aide IA
             <input type="checkbox" id="tetrisHelp" checked>
             <span class="slider"></span>
@@ -127,6 +208,7 @@
           <p class="muted">Déplacez les pièces par clics successifs, les coups illégaux sont bloqués.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <button id="chessReset">Rejouer</button>
         </div>
       </div>
@@ -142,6 +224,7 @@
           <p class="muted">Générez un avatar abstrait cohérent. Téléchargez si vous aimez.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <button id="avatarGenerate">Générer</button>
           <button id="avatarDownload" class="ghost">Télécharger</button>
         </div>
@@ -157,6 +240,7 @@
           <p class="muted">Comparez plusieurs algorithmes en direct.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <select id="sortAlgo">
             <option value="bubble">Tri à bulles</option>
             <option value="insertion">Insertion</option>
@@ -179,6 +263,7 @@
           <p class="muted">Suivez un automate simple (incrément binaire) pas à pas.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <button id="turingStep" class="ghost">Pas</button>
           <button id="turingRun">Lancer/Pause</button>
           <button id="turingReset">Réinitialiser</button>
@@ -196,6 +281,7 @@
           <p class="muted">Choisissez un algorithme et regardez-le explorer.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <select id="mazeAlgo">
             <option value="bfs">BFS</option>
             <option value="dfs">DFS</option>
@@ -217,6 +303,7 @@
           <p class="muted">Faites tourner la sphère, zoomez et admirez le glow doux.</p>
         </div>
         <div class="controls">
+          <button class="pill ghost" data-target="hub">← Retour au hub</button>
           <label class="switch">Mode filaire
             <input type="checkbox" id="wireframeToggle">
             <span class="slider"></span>

@@ -1,17 +1,24 @@
 // Hub d'activités : chaque module reste autonome mais partage le même thème.
 (() => {
-  const activities = document.querySelectorAll('.activity');
-  const hubButtons = document.getElementById('hubButtons');
-  hubButtons.addEventListener('click', (e) => {
+  const activities = Array.from(document.querySelectorAll('.activity'));
+  const refreshers = {};
+
+  function showView(id) {
+    activities.forEach(sec => sec.classList.toggle('active', sec.id === id));
+    document.querySelectorAll('[data-target]').forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    refreshers[id]?.();
+  }
+
+  document.addEventListener('click', (e) => {
     const target = e.target.closest('[data-target]');
     if (!target) return;
-    const id = target.dataset.target;
-    activities.forEach(sec => sec.classList.toggle('active', sec.id === id));
-    window.scrollTo({ top: hubButtons.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
+    e.preventDefault();
+    showView(target.dataset.target);
   });
-  // Active la première section par défaut
-  const first = activities[0];
-  if (first) first.classList.add('active');
+
+  const initiallyActive = document.querySelector('.activity.active') || activities[0];
+  if (initiallyActive) showView(initiallyActive.id);
 
   // --------------------------- PUISSANCE 4 ---------------------------
   const ROWS = 6, COLS = 7, CONNECT = 4, EMPTY = 0, RED = 1, YELLOW = -1;
@@ -128,6 +135,7 @@
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) if (cfBoard[r][c] !== EMPTY) renderPiece(r, c, cfBoard[r][c], animate);
     }
+    return null;
   }
   function renderPiece(row, col, player, animate = true) {
     const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
@@ -208,6 +216,7 @@
       }
       return value;
     }
+    return best;
   }
   const getLegalMoves=(state)=>{ const moves=[]; for(let c=0;c<COLS;c++) if(state[0][c]===EMPTY) moves.push(c); return moves; };
   const isBoardFullState=(state)=>state[0].every(v=>v!==EMPTY);
@@ -221,6 +230,7 @@
   buildGrid();
   bindEvents();
   resetGame();
+  refreshers.connect4 = () => { renderBoard(false); updateTurnStatus(); };
 
   // --------------------------- SNAKE ---------------------------
   const snakeCanvas = document.getElementById('snakeCanvas');
@@ -258,6 +268,7 @@
     return direction;
   }
   document.addEventListener('keydown', e=>{
+    if(!document.getElementById('snake').classList.contains('active')) return;
     if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
       autoMode=false; snakeStatus.textContent='Mode manuel';
       const map={ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0}};
@@ -268,6 +279,7 @@
   snakeAutoBtn.addEventListener('click',()=>{autoMode=true; snakeStatus.textContent='Mode IA continu';});
   snakeResetBtn.addEventListener('click',snakeInit);
   snakeInit();
+  refreshers.snake = drawSnake;
 
   // --------------------------- 2048 ---------------------------
   const gridEl = document.getElementById('grid2048');
@@ -300,6 +312,7 @@
   solverToggle.addEventListener('click',()=>{ solverRunning? stopSolver(): startSolver(); });
   gameResetBtn.addEventListener('click',reset2048);
   setupGrid(); reset2048();
+  refreshers.game2048 = render2048;
 
   // --------------------------- TETRIS ---------------------------
   const tetCanvas=document.getElementById('tetrisCanvas');
@@ -348,6 +361,7 @@
   document.addEventListener('keydown',e=>{ if(!document.getElementById('tetris').classList.contains('active')) return; if(e.key==='ArrowLeft') move(-1); if(e.key==='ArrowRight') move(1); if(e.key==='ArrowUp') rotateCurrent(); if(e.key==='ArrowDown') tick(); if(e.code==='Space'){ e.preventDefault(); drop(); }});
   function updateTetrisScore(){ tetrisScoreEl.textContent=`Score : ${tScore}`; }
   tetrisResetBtn.addEventListener('click',resetTetris); resetTetris();
+  refreshers.tetris = drawTetris;
 
   // --------------------------- CHESS ---------------------------
   const chessBoardEl=document.getElementById('chessBoard');
@@ -397,6 +411,7 @@
   function wouldExposeKing(r,c,rr,cc){ const piece=chessBoard[r][c]; const backup=chessBoard[rr][cc]; chessBoard[rr][cc]=piece; chessBoard[r][c]=''; const kingPos=findKing(isWhite(piece)); const danger=isInCheck(kingPos[0],kingPos[1], isWhite(piece)); chessBoard[r][c]=piece; chessBoard[rr][cc]=backup; return danger; }
   function isInCheck(kr,kc,white){ for(let r=0;r<8;r++) for(let c=0;c<8;c++){ const p=chessBoard[r][c]; if(!p || (white?isWhite(p):isBlack(p))) continue; const moves=baseMoves(r,c); if(moves.some(([mr,mc])=>mr===kr && mc===kc)) return true; } return false; }
   chessResetBtn.addEventListener('click',initChess); initChess();
+  refreshers.chess = renderChess;
 
   // --------------------------- AVATAR ---------------------------
   const avatarCanvas=document.getElementById('avatarCanvas');
@@ -412,6 +427,7 @@
   avatarGenerate.addEventListener('click',generateAvatar);
   avatarDownload.addEventListener('click',()=>{ const link=document.createElement('a'); link.download='avatar.png'; link.href=avatarCanvas.toDataURL('image/png'); link.click(); });
   generateAvatar();
+  refreshers.avatar = generateAvatar;
 
   // --------------------------- SORTING ---------------------------
   const sortCanvas=document.getElementById('sortCanvas');
@@ -436,6 +452,7 @@
   sortStart.addEventListener('click',()=>{ recordSteps(sortAlgo.value); stepIndex=0; playSteps(); });
   sortSpeed.addEventListener('input',()=>{ if(sorting){ clearInterval(sortTimer); playSteps(); }});
   initArray();
+  refreshers.sorting = () => drawArray();
 
   // --------------------------- TURING MACHINE ---------------------------
   const turingTapeEl=document.getElementById('turingTape');
@@ -458,6 +475,7 @@
   turingRunBtn.addEventListener('click',()=>{ if(state==='halt'){ initTape(); } runTuring(); });
   turingResetBtn.addEventListener('click',initTape);
   initTape();
+  refreshers.turing = renderTape;
 
   // --------------------------- MAZE SOLVER ---------------------------
   const mazeCanvas=document.getElementById('mazeCanvas');
@@ -483,6 +501,7 @@
   mazeStart.addEventListener('click',()=>{ running? stopMaze(): runMaze(); });
   mazeReset.addEventListener('click',()=>{ stopMaze(); generateMaze(); });
   generateMaze();
+  refreshers.maze = () => drawMaze();
 
   // --------------------------- SPHERE 3D ---------------------------
   const sphereContainer=document.getElementById('sphereContainer');
@@ -496,6 +515,7 @@
   const geometry=new THREE.SphereGeometry(1,48,32);
   const material=new THREE.MeshStandardMaterial({ color:0x7ad7f0, emissive:0x112233, metalness:0.3, roughness:0.2 });
   const sphere=new THREE.Mesh(geometry,material); scene.add(sphere);
+  const resizeSphere=()=>{ const w=Math.max(1,sphereContainer.clientWidth); const h=Math.max(1,sphereContainer.clientHeight); renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); };
   const controls={ rotating:false, lastX:0, lastY:0 };
   sphereContainer.addEventListener('mousedown',e=>{ controls.rotating=true; controls.lastX=e.clientX; controls.lastY=e.clientY; });
   window.addEventListener('mouseup',()=>controls.rotating=false);
@@ -503,5 +523,7 @@
   sphereContainer.addEventListener('wheel',e=>{ camera.position.z+=e.deltaY*0.002; camera.position.z=Math.min(6,Math.max(2,camera.position.z)); });
   wireframeToggle.addEventListener('change',()=>{ material.wireframe=wireframeToggle.checked; });
   function animate(){ requestAnimationFrame(animate); sphere.rotation.y+=0.003; renderer.render(scene,camera); }
+  window.addEventListener('resize', resizeSphere);
+  refreshers.sphere = resizeSphere;
   animate();
 })();
