@@ -26,6 +26,11 @@ body {
   min-height: 100vh;
 }
 
+.page-limit {
+  width: min(1080px, 96vw);
+  margin: 0 auto;
+}
+
 header, footer {
   text-align: center;
   padding: 24px 16px 8px;
@@ -35,6 +40,10 @@ header h1 {
   margin: 0;
   font-weight: 700;
   letter-spacing: 0.5px;
+}
+
+.title-block h1 {
+  font-size: clamp(1.8rem, 2.3vw + 1rem, 2.4rem);
 }
 
 .subtitle {
@@ -129,6 +138,66 @@ button.ghost {
   font-size: 1rem;
 }
 
+.text.emphasis {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.board-section {
+  width: 100%;
+}
+
+.board-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.board-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.board-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #1f2430;
+  color: var(--muted);
+  border: 1px solid #2b3040;
+}
+
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.text {
+  font-size: 1rem;
+}
+
 .muted {
   color: var(--muted);
 }
@@ -143,6 +212,14 @@ button.ghost {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(6, 1fr);
+  gap: 8px;
+  background: linear-gradient(180deg, #1f2432, #181c28);
+  padding: 12px;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  width: min(760px, 100%);
+  aspect-ratio: 7 / 6;
+  border: 1px solid #2c3242;
   gap: 6px;
   background: var(--grid);
   padding: 10px;
@@ -154,6 +231,27 @@ button.ghost {
 
 .cell {
   position: relative;
+  background: #131621;
+  border-radius: 14px;
+  border: 1px solid #252c3d;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+}
+
+.cell:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(242, 95, 92, 0.3);
+  transform: translateY(-2px);
+}
+
+.cell::after {
+  content: "";
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.03);
   background: var(--cell);
   border-radius: 10px;
   overflow: hidden;
@@ -187,8 +285,25 @@ button.ghost {
   box-shadow: 0 0 0 3px var(--accent-soft), 0 0 18px rgba(247, 178, 103, 0.6);
 }
 
+.col-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: min(760px, 100%);
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
 .suggestion .cell {
   box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.8);
+}
+
+.suggestion .cell:hover {
+  transform: translateY(-1px);
+}
+
 }
 
 .suggestion .cell:hover {
@@ -210,6 +325,16 @@ footer {
 
   .buttons {
     flex-direction: column;
+  }
+
+  .board {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .col-labels {
+    width: 100%;
+    gap: 6px;
   }
 
   .piece {

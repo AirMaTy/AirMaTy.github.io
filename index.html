@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="page-limit">
+    <header>
+      <div class="title-block">
+        <h1>Puissance 4 IA</h1>
+        <p class="subtitle">Affrontez une IA imbattable, demandez un conseil instantané, ou jouez à deux en local.</p>
   <header>
     <div class="title-block">
       <h1>Puissance 4 IA</h1>
@@ -24,7 +29,57 @@
           <option value="pvp">Joueur vs Joueur (local)</option>
         </select>
       </div>
+    </header>
 
+    <main>
+      <section class="control-panel" aria-label="Panneau de contrôle">
+        <div class="control">
+          <label for="mode">Mode de jeu</label>
+          <select id="mode">
+            <option value="ai">Joueur vs IA (Imbattable)</option>
+            <option value="assist">Joueur + Aide IA vs IA</option>
+            <option value="pvp">Joueur vs Joueur (local)</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="starter">Premier joueur</label>
+          <select id="starter">
+            <option value="human">Humain</option>
+            <option value="ai">IA</option>
+          </select>
+        </div>
+
+        <div class="control buttons">
+          <button id="advice" class="ghost">Demander un conseil</button>
+          <button id="reset">Rejouer</button>
+        </div>
+      </section>
+
+      <section class="status-panel" aria-live="polite">
+        <div id="modeStatus" class="badge">Mode : Joueur vs IA (Imbattable)</div>
+        <div id="turnStatus" class="text emphasis">Au tour du joueur rouge</div>
+        <div id="message" class="text muted"></div>
+      </section>
+
+      <section class="board-section" aria-label="Plateau de jeu">
+        <div class="board-header">
+          <h2>Plateau 7 colonnes × 6 rangées</h2>
+          <p class="muted">Cliquez sur une colonne pour y déposer un pion.</p>
+        </div>
+        <div class="board-shell">
+          <div id="board" class="board" aria-label="Grille de Puissance 4"></div>
+          <div class="col-labels" aria-hidden="true">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p class="muted">Interface sombre minimaliste • IA Minimax avec élagage alpha-bêta</p>
+  </footer>
       <div class="control">
         <label for="starter">Premier joueur</label>
         <select id="starter">
