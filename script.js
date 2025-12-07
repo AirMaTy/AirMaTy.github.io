@@ -113,6 +113,7 @@ function resetGame() {
   if (mode !== 'pvp' && currentPlayer === aiPlayer) {
     aiMoveWithDelay();
   }
+  turnStatus.textContent = text;
 }
 
 function updateModeStatus() {
@@ -167,6 +168,7 @@ function playMove(col) {
   if (mode === 'assist' && currentPlayer !== aiPlayer && !gameOver) {
     provideSuggestionPreview();
   }
+}
 
   if (mode !== 'pvp' && currentPlayer === aiPlayer && !gameOver) {
     aiMoveWithDelay();
