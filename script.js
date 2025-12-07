@@ -1,6 +1,7 @@
 (() => {
   // ---------- Navigation / vues ----------
   const activities = Array.from(document.querySelectorAll('.activity'));
+  const hero = document.querySelector('.hero');
   const navItems = Array.from(document.querySelectorAll('[data-target]'));
   const sidebar = document.querySelector('.nav-list');
   const toggle = document.querySelector('.nav-toggle');
@@ -9,6 +10,7 @@
   function showActivity(id) {
     activities.forEach(sec => sec.classList.toggle('active', sec.id === id));
     navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
+    if (hero) hero.classList.toggle('hidden', id !== 'hub');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     refreshers[id]?.();
     if (sidebar && sidebar.classList.contains('open')) sidebar.classList.remove('open');
