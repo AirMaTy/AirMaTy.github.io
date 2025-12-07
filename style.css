@@ -172,6 +172,42 @@ button.ghost {
   gap: 10px;
 }
 
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #1f2430;
+  color: var(--muted);
+  border: 1px solid #2b3040;
+}
+
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.text {
+  font-size: 1rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -184,6 +220,13 @@ button.ghost {
   width: min(760px, 100%);
   aspect-ratio: 7 / 6;
   border: 1px solid #2c3242;
+  gap: 6px;
+  background: var(--grid);
+  padding: 10px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  width: min(720px, 95vw);
+  aspect-ratio: 7 / 6;
 }
 
 .cell {
@@ -209,6 +252,16 @@ button.ghost {
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.03);
+  background: var(--cell);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.cell:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .piece {
@@ -245,6 +298,12 @@ button.ghost {
 
 .suggestion .cell {
   box-shadow: 0 0 0 2px rgba(247, 178, 103, 0.8);
+}
+
+.suggestion .cell:hover {
+  transform: translateY(-1px);
+}
+
 }
 
 .suggestion .cell:hover {
