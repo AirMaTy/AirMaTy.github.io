@@ -135,6 +135,7 @@
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) if (cfBoard[r][c] !== EMPTY) renderPiece(r, c, cfBoard[r][c], animate);
     }
+    return null;
   }
   function renderPiece(row, col, player, animate = true) {
     const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
@@ -215,6 +216,7 @@
       }
       return value;
     }
+    return best;
   }
   const getLegalMoves=(state)=>{ const moves=[]; for(let c=0;c<COLS;c++) if(state[0][c]===EMPTY) moves.push(c); return moves; };
   const isBoardFullState=(state)=>state[0].every(v=>v!==EMPTY);
