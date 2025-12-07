@@ -3,68 +3,277 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puissance 4 IA</title>
+  <title>Hub Ludique IA</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-  <div class="page-limit">
-    <header>
-      <div class="title-block">
-        <h1>Puissance 4 IA</h1>
-        <p class="subtitle">Affrontez une IA imbattable, demandez un conseil instantané, ou jouez à deux en local.</p>
-      </div>
-    </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">Hub Ludique</div>
+      <button class="nav-toggle" aria-label="Basculer le menu">☰</button>
+      <nav class="nav-list">
+        <button class="nav-item active" data-target="hub">Accueil</button>
+        <button class="nav-item" data-target="connect4">Puissance 4</button>
+        <button class="nav-item" data-target="snake">Snake</button>
+        <button class="nav-item" data-target="game2048">2048</button>
+        <button class="nav-item" data-target="tetris">Tetris</button>
+        <button class="nav-item" data-target="chess">Échecs</button>
+        <button class="nav-item" data-target="sorting">Tri visuel</button>
+        <button class="nav-item" data-target="maze">IA Labyrinthe</button>
+        <button class="nav-item" data-target="sphere">Sphère 3D</button>
+      </nav>
+    </aside>
 
-    <main>
-      <section class="control-panel" aria-label="Panneau de contrôle">
-        <div class="control">
-          <label for="mode">Mode de jeu</label>
-          <select id="mode">
-            <option value="ai">Joueur vs IA (Imbattable)</option>
-            <option value="assist">Joueur + Aide IA vs IA</option>
-            <option value="pvp">Joueur vs Joueur (local)</option>
-          </select>
+    <main class="content">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Expériences interactives • IA & Jeux classiques</p>
+          <h1>Hub Ludique Minimaliste</h1>
+          <p class="subtitle">Sélectionnez une activité dans le menu latéral. Une seule vue est visible à la fois.</p>
+          <div class="hero-actions">
+            <button class="pill" data-target="hub">Voir le hub</button>
+            <button class="pill ghost" data-target="connect4">Accès rapide : Puissance 4</button>
+          </div>
         </div>
+      </header>
 
-        <div class="control">
-          <label for="starter">Premier joueur</label>
-          <select id="starter">
-            <option value="human">Humain</option>
-            <option value="ai">IA</option>
-          </select>
-        </div>
-
-        <div class="control buttons">
-          <button id="advice" class="ghost">Demander un conseil</button>
-          <button id="reset">Rejouer</button>
+      <section class="activity active" id="hub" aria-label="Accueil du hub">
+        <div class="hub-grid">
+          <article class="card">
+            <div>
+              <p class="eyebrow">Classique</p>
+              <h3>Puissance 4</h3>
+              <p class="muted">Grille 7x6 avec IA minimax et conseils rapides.</p>
+            </div>
+            <button class="card-btn" data-target="connect4">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Réactif</p>
+              <h3>Snake</h3>
+              <p class="muted">Contrôle ZQSD ou IA automatique.</p>
+            </div>
+            <button class="card-btn" data-target="snake">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Glisser</p>
+              <h3>2048</h3>
+              <p class="muted">Déplacements fluides et solver.</p>
+            </div>
+            <button class="card-btn" data-target="game2048">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Empiler</p>
+              <h3>Tetris</h3>
+              <p class="muted">Fantôme IA pour le meilleur placement.</p>
+            </div>
+            <button class="card-btn" data-target="tetris">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Stratégie</p>
+              <h3>Échecs</h3>
+              <p class="muted">Mode local à deux, coups légaux uniquement.</p>
+            </div>
+            <button class="card-btn" data-target="chess">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Algorithmique</p>
+              <h3>Tri visuel</h3>
+              <p class="muted">Bulles, insertion, fusion et rapide animés.</p>
+            </div>
+            <button class="card-btn" data-target="sorting">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Recherche</p>
+              <h3>IA Labyrinthe</h3>
+              <p class="muted">BFS, DFS ou A* animés.</p>
+            </div>
+            <button class="card-btn" data-target="maze">Lancer</button>
+          </article>
+          <article class="card">
+            <div>
+              <p class="eyebrow">Immersif</p>
+              <h3>Sphère 3D</h3>
+              <p class="muted">Rotation et zoom interactifs.</p>
+            </div>
+            <button class="card-btn" data-target="sphere">Lancer</button>
+          </article>
         </div>
       </section>
 
-      <section class="status-panel" aria-live="polite">
-        <div id="modeStatus" class="badge">Mode : Joueur vs IA (Imbattable)</div>
-        <div id="turnStatus" class="text emphasis">Au tour du joueur rouge</div>
-        <div id="message" class="text muted"></div>
-      </section>
-
-      <section class="board-section" aria-label="Plateau de jeu">
-        <div class="board-header">
-          <h2>Plateau 7 colonnes × 6 rangées</h2>
-          <p class="muted">Cliquez sur une colonne pour y déposer un pion.</p>
+      <section class="activity" id="connect4" aria-label="Puissance 4">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Classique</p>
+            <h2>Puissance 4 avec IA</h2>
+            <p class="muted">Choisissez votre mode, demandez un conseil instantané ou jouez à deux.</p>
+          </div>
+          <div class="controls">
+            <label>Mode
+              <select id="mode">
+                <option value="ai">Joueur vs IA (imbattable)</option>
+                <option value="assist">Joueur + aide IA</option>
+                <option value="pvp">Joueur vs joueur</option>
+              </select>
+            </label>
+            <label>Premier joueur
+              <select id="starter">
+                <option value="human">Humain</option>
+                <option value="ai">IA</option>
+              </select>
+            </label>
+            <button id="advice" class="ghost">Conseil</button>
+            <button id="reset">Rejouer</button>
+          </div>
         </div>
-        <div class="board-shell">
-          <div id="board" class="board" aria-label="Grille de Puissance 4"></div>
+        <div class="status">
+          <div id="modeStatus" class="badge">Mode : Joueur vs IA (imbattable)</div>
+          <div id="turnStatus" class="status-text">Au tour du joueur rouge</div>
+          <div id="message" class="muted"></div>
+        </div>
+        <div class="board-wrapper">
+          <div id="board" class="board"></div>
           <div class="col-labels" aria-hidden="true">
             <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
           </div>
         </div>
       </section>
+
+      <section class="activity" id="snake" aria-label="Snake">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Réactif</p>
+            <h2>Snake – IA ou ZQSD</h2>
+            <p class="muted">Alternez entre serpent autonome et contrôle manuel (ZQSD ou flèches).</p>
+          </div>
+          <div class="controls">
+            <button id="snakeManual" class="ghost">Mode manuel</button>
+            <button id="snakeAuto">Mode IA</button>
+            <button id="snakeReset">Rejouer</button>
+          </div>
+        </div>
+        <canvas id="snakeCanvas" width="420" height="420" class="panel"></canvas>
+        <p class="muted small">Contrôles : Z/Q/S/D ou flèches. Rouge = serpent, vert = pomme.</p>
+      </section>
+
+      <section class="activity" id="game2048" aria-label="2048">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Glisser</p>
+            <h2>2048</h2>
+            <p class="muted">Jouez au clavier ou laissez l'IA tenter sa chance.</p>
+          </div>
+          <div class="controls">
+            <button id="ai2048" class="ghost">IA</button>
+            <button id="stopAI2048">Arrêter IA</button>
+            <button id="reset2048">Recommencer</button>
+          </div>
+        </div>
+        <div class="grid-2048" id="grid2048"></div>
+        <div class="status-text" id="status2048"></div>
+      </section>
+
+      <section class="activity" id="tetris" aria-label="Tetris">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Empiler</p>
+            <h2>Tetris avec aide IA</h2>
+            <p class="muted">Contrôles clavier, fantôme indiquant le placement conseillé.</p>
+          </div>
+          <div class="controls">
+            <button id="helpToggle" class="ghost">Aide IA : ON</button>
+            <button id="resetTetris">Rejouer</button>
+          </div>
+        </div>
+        <canvas id="tetrisCanvas" width="320" height="640" class="panel"></canvas>
+        <p class="muted small">Touches : flèches ou ZQSD pour déplacer/rotation (Z=haut). Barre espace pour chute rapide.</p>
+      </section>
+
+      <section class="activity" id="chess" aria-label="Échecs">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Stratégie</p>
+            <h2>Échecs locaux</h2>
+            <p class="muted">Sélectionnez une pièce pour voir ses coups légaux. Pas d'IA.</p>
+          </div>
+          <div class="controls">
+            <button id="resetChess">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="chess-wrapper">
+          <div id="chessBoard" class="chess-board"></div>
+          <div class="status-text" id="chessStatus">Trait aux blancs</div>
+        </div>
+      </section>
+
+      <section class="activity" id="sorting" aria-label="Tri visuel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Algorithmique</p>
+            <h2>Visualiseur de tri</h2>
+            <p class="muted">Choisissez un algorithme et observez les comparaisons.</p>
+          </div>
+          <div class="controls">
+            <select id="algoSelect">
+              <option value="bubble">Bulles</option>
+              <option value="insertion">Insertion</option>
+              <option value="merge">Fusion</option>
+              <option value="quick">Rapide</option>
+            </select>
+            <button id="shuffleBars" class="ghost">Mélanger</button>
+            <button id="startSort">Lancer</button>
+            <button id="pauseSort">Pause</button>
+          </div>
+        </div>
+        <div class="bars" id="bars"></div>
+      </section>
+
+      <section class="activity" id="maze" aria-label="IA Labyrinthe">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Recherche</p>
+            <h2>IA de labyrinthe</h2>
+            <p class="muted">Générez un labyrinthe et lancez BFS, DFS ou A* en animation.</p>
+          </div>
+          <div class="controls">
+            <select id="mazeAlgo">
+              <option value="bfs">BFS</option>
+              <option value="dfs">DFS</option>
+              <option value="astar">A*</option>
+            </select>
+            <button id="genMaze" class="ghost">Nouveau labyrinthe</button>
+            <button id="startMaze">Démarrer</button>
+            <button id="resetMaze">Réinitialiser</button>
+          </div>
+        </div>
+        <canvas id="mazeCanvas" width="520" height="520" class="panel"></canvas>
+        <p class="muted small">Vert = départ, rouge = arrivée, bleu = exploré.</p>
+      </section>
+
+      <section class="activity" id="sphere" aria-label="Sphère 3D">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Immersif</p>
+            <h2>Sphère 3D interactive</h2>
+            <p class="muted">Rotation libre, zoom et éclairage doux.</p>
+          </div>
+          <div class="controls">
+            <button id="toggleWire" class="ghost">Mode filaire</button>
+            <button id="resetSphere">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="sphere-wrapper panel" id="sphereContainer"></div>
+        <p class="muted small">Astuce : cliquez-glissez pour orienter, molette pour zoomer.</p>
+      </section>
     </main>
   </div>
-
-  <footer>
-    <p class="muted">Interface sombre minimaliste • IA Minimax avec élagage alpha-bêta</p>
-  </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
