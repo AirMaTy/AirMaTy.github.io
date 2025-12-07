@@ -1,282 +1,526 @@
-// Morpion IA - trois modes avec IA imbattable et aide
-// Code en JavaScript pur, commenté pour faciliter la lecture.
+// Constantes principales
+const ROWS = 6;
+const COLS = 7;
+const CONNECT = 4;
+const EMPTY = 0;
+const RED = 1; // joueur 1
+const YELLOW = -1; // joueur 2
 
-const boardEl = document.querySelector('.board');
+// Éléments du DOM
+const boardEl = document.getElementById('board');
 const modeSelect = document.getElementById('mode');
-const playerSymbolSelect = document.getElementById('player-symbol');
 const starterSelect = document.getElementById('starter');
-const turnLabel = document.getElementById('turn-label');
-const resultLabel = document.getElementById('result');
-const modeLabel = document.getElementById('mode-label');
-const startLabel = document.getElementById('start-label');
-const hintButton = document.getElementById('hint');
-const resetButton = document.getElementById('reset');
+const modeStatus = document.getElementById('modeStatus');
+const turnStatus = document.getElementById('turnStatus');
+const messageEl = document.getElementById('message');
+const resetBtn = document.getElementById('reset');
+const adviceBtn = document.getElementById('advice');
 
-const MODES = {
-  AI: 'ia',
-  ASSIST: 'assist',
-  PVP: 'pvp'
-};
-
-let board = Array(9).fill(null);
-let currentPlayer = 'X';
+// État du jeu
+let board = createEmptyBoard();
+let currentPlayer = RED;
 let gameOver = false;
-let humanSymbol = 'X';
-let aiSymbol = 'O';
-let currentMode = MODES.AI;
-let suggestedIndex = null;
+let mode = 'ai';
+let suggestionCol = null;
+let suggestionRow = null;
+let aiPlayer = YELLOW; // mis à jour selon le premier joueur
 
-// --- Initialisation de la grille ---
-function createBoardUI() {
+init();
+
+function init() {
+  buildGrid();
+  bindEvents();
+  resetGame();
+}
+
+function createEmptyBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(EMPTY));
+}
+
+function buildGrid() {
   boardEl.innerHTML = '';
-  for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.index = i;
-    cell.setAttribute('role', 'button');
-    cell.setAttribute('aria-label', `Case ${i + 1}`);
-    cell.addEventListener('click', onCellClick);
+  boardEl.style.setProperty('--rows', ROWS);
+  boardEl.style.setProperty('--cols', COLS);
 
-    const content = document.createElement('span');
-    cell.appendChild(content);
-    boardEl.appendChild(cell);
-  }
-}
-
-// --- Gestion des clics sur la grille ---
-function onCellClick(event) {
-  const index = Number(event.currentTarget.dataset.index);
-
-  if (gameOver || board[index]) return;
-
-  // Impossible de jouer pour l'humain si ce n'est pas son tour dans les modes IA
-  if (isAiTurn()) return;
-
-  placeMove(index, currentPlayer);
-  processTurn();
-}
-
-// Place un symbole dans l'état et l'UI
-function placeMove(index, symbol) {
-  board[index] = symbol;
-  const cell = boardEl.querySelector(`[data-index="${index}"]`);
-  if (cell) {
-    cell.querySelector('span').textContent = symbol;
-    cell.classList.remove('suggested');
-  }
-}
-
-// Réinitialise le plateau et met à jour l'état
-function resetGame() {
-  board = Array(9).fill(null);
-  gameOver = false;
-  suggestedIndex = null;
-  Array.from(boardEl.children).forEach(cell => {
-    cell.querySelector('span').textContent = '';
-    cell.classList.remove('suggested', 'disabled');
-  });
-  currentMode = modeSelect.value;
-  humanSymbol = playerSymbolSelect.value;
-  aiSymbol = humanSymbol === 'X' ? 'O' : 'X';
-  currentPlayer = starterSelect.value;
-  updateLabels();
-  resultLabel.textContent = '';
-
-  // Dans les modes IA, si l'IA commence, elle joue immédiatement
-  if (isAiTurn() && !gameOver) {
-    aiPlay();
-  }
-}
-
-function updateLabels() {
-  const modeText = {
-    [MODES.AI]: 'IA imbattable',
-    [MODES.ASSIST]: 'Aide IA + IA adverse',
-    [MODES.PVP]: 'Joueur vs Joueur'
-  }[currentMode];
-
-  modeLabel.textContent = `Mode actuel : ${modeText}`;
-  turnLabel.textContent = `Au tour de ${currentPlayer}`;
-  startLabel.textContent = `Première pièce : ${starterSelect.value}`;
-
-  hintButton.classList.toggle('hidden', currentMode !== MODES.ASSIST);
-}
-
-// Détecte un gagnant ou une égalité
-function checkOutcome() {
-  const lines = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
-
-  for (const [a, b, c] of lines) {
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return { winner: board[a] };
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      boardEl.appendChild(cell);
     }
   }
-
-  if (board.every(Boolean)) {
-    return { winner: null };
-  }
-
-  return null;
 }
 
-// Gère la suite d'un tour : vérifie fin, sinon passe la main/IA
-function processTurn() {
-  const outcome = checkOutcome();
-  if (outcome) {
-    endGame(outcome.winner);
+function bindEvents() {
+  boardEl.addEventListener('click', handleBoardClick);
+  modeSelect.addEventListener('change', handleModeChange);
+  starterSelect.addEventListener('change', handleStarterChange);
+  resetBtn.addEventListener('click', resetGame);
+  adviceBtn.addEventListener('click', handleAdvice);
+}
+
+function handleModeChange() {
+  mode = modeSelect.value;
+  updateStarterOptions();
+  resetGame();
+}
+
+function handleStarterChange() {
+  resetGame();
+}
+
+function updateStarterOptions() {
+  starterSelect.innerHTML = '';
+  if (mode === 'pvp') {
+    starterSelect.insertAdjacentHTML('beforeend', '<option value="human">Joueur 1 (rouge)</option>');
+    starterSelect.insertAdjacentHTML('beforeend', '<option value="ai">Joueur 2 (jaune)</option>');
+    adviceBtn.disabled = true;
+    adviceBtn.classList.add('ghost');
+  } else {
+    starterSelect.insertAdjacentHTML('beforeend', '<option value="human">Humain</option>');
+    starterSelect.insertAdjacentHTML('beforeend', '<option value="ai">IA</option>');
+    adviceBtn.disabled = mode !== 'assist';
+    adviceBtn.classList.toggle('ghost', mode !== 'assist');
+  }
+
+  adviceBtn.disabled = mode !== 'assist';
+  adviceBtn.classList.toggle('ghost', mode !== 'assist');
+}
+
+function resetGame() {
+  board = createEmptyBoard();
+  gameOver = false;
+  suggestionCol = null;
+  suggestionRow = null;
+  clearSuggestion();
+  clearWinnerHighlights();
+  if (mode === 'pvp') {
+    currentPlayer = starterSelect.value === 'human' ? RED : YELLOW;
+  } else {
+    aiPlayer = starterSelect.value === 'ai' ? RED : YELLOW;
+    // Le rouge est toujours le premier joueur : humain si sélectionné, sinon l'IA.
+    currentPlayer = RED;
+  }
+  updateModeStatus();
+  renderBoard(false);
+  updateTurnStatus();
+  messageEl.textContent = '';
+  if (mode === 'assist' && currentPlayer !== aiPlayer) {
+    provideSuggestionPreview();
+  }
+  if (mode !== 'pvp' && currentPlayer === aiPlayer) {
+    aiMoveWithDelay();
+  }
+}
+
+function updateModeStatus() {
+  const label = modeSelect.options[modeSelect.selectedIndex].textContent;
+  modeStatus.textContent = `Mode : ${label}`;
+}
+
+function updateTurnStatus() {
+  if (gameOver) return;
+  let text = '';
+  if (mode === 'pvp') {
+    text = currentPlayer === RED ? 'Au tour du joueur rouge' : 'Au tour du joueur jaune';
+  } else {
+    const isHumanTurn = currentPlayer !== aiPlayer;
+    text = isHumanTurn ? 'Au tour du joueur (couleur rouge si premier, sinon jaune)' : 'Au tour de l\'IA';
+  }
+  turnStatus.textContent = text;
+}
+
+function handleBoardClick(e) {
+  if (gameOver) return;
+  const cell = e.target.closest('.cell');
+  if (!cell) return;
+  const col = Number(cell.dataset.col);
+
+  if (mode !== 'pvp' && currentPlayer === aiPlayer) {
+    return; // empêcher clic pendant le tour de l'IA
+  }
+
+  playMove(col);
+}
+
+function playMove(col) {
+  if (suggestionCol !== null) clearSuggestion();
+  const row = getAvailableRow(col);
+  if (row === null) {
+    flashMessage('Colonne pleine');
     return;
   }
 
-  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-  updateLabels();
+  placePiece(row, col, currentPlayer);
+  renderPiece(row, col, currentPlayer);
+  const outcome = evaluateOutcome(row, col, currentPlayer);
 
-  if (isAiTurn() && !gameOver) {
-    aiPlay();
+  if (outcome.finished) {
+    endGame(outcome);
+    return;
+  }
+
+  switchTurn();
+
+  if (mode === 'assist' && currentPlayer !== aiPlayer && !gameOver) {
+    provideSuggestionPreview();
+  }
+
+  if (mode !== 'pvp' && currentPlayer === aiPlayer && !gameOver) {
+    aiMoveWithDelay();
   }
 }
 
-function endGame(winner) {
-  gameOver = true;
-  turnLabel.textContent = 'Partie terminée';
-  if (winner) {
-    resultLabel.textContent = `${winner} a gagné`;
-  } else {
-    resultLabel.textContent = 'Match nul';
+function getAvailableRow(col) {
+  for (let r = ROWS - 1; r >= 0; r--) {
+    if (board[r][col] === EMPTY) return r;
   }
-  // Empêche tout clic supplémentaire
-  Array.from(boardEl.children).forEach(cell => cell.classList.add('disabled'));
+  return null;
 }
 
-function isAiTurn() {
-  const isHumanTurn = currentMode === MODES.PVP ? true : currentPlayer === humanSymbol;
-  return !isHumanTurn;
+function placePiece(row, col, player) {
+  board[row][col] = player;
 }
 
-// --- IA : Minimax complet ---
-// Évalue une position : +10 si l'IA gagne, -10 si l'humain gagne, 0 sinon
-function evaluateBoard(boardState) {
-  const lines = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
+function renderBoard(animate = true) {
+  boardEl.querySelectorAll('.piece').forEach(p => p.remove());
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (board[r][c] !== EMPTY) {
+        renderPiece(r, c, board[r][c], animate);
+      }
+    }
+  }
+}
+
+function renderPiece(row, col, player, animate = true) {
+  const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+  if (!cell) return;
+  const piece = document.createElement('div');
+  piece.className = `piece ${player === RED ? 'rouge' : 'jaune'}`;
+  if (animate) piece.classList.add('drop');
+  cell.appendChild(piece);
+}
+
+function evaluateOutcome(row, col, player) {
+  const winLine = checkWin(row, col, player);
+  if (winLine) {
+    highlightWinners(winLine);
+    return { finished: true, winner: player };
+  }
+  if (isBoardFull()) {
+    return { finished: true, winner: null };
+  }
+  return { finished: false };
+}
+
+function checkWin(row, col, player) {
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, -1],
   ];
 
-  for (const [a, b, c] of lines) {
-    if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]) {
-      if (boardState[a] === aiSymbol) return 10;
-      if (boardState[a] === humanSymbol) return -10;
+  for (const [dr, dc] of directions) {
+    const line = [[row, col]];
+    // avant
+    let r = row + dr;
+    let c = col + dc;
+    while (isInside(r, c) && board[r][c] === player) {
+      line.push([r, c]);
+      r += dr;
+      c += dc;
+    }
+    // arrière
+    r = row - dr;
+    c = col - dc;
+    while (isInside(r, c) && board[r][c] === player) {
+      line.unshift([r, c]);
+      r -= dr;
+      c -= dc;
+    }
+    if (line.length >= CONNECT) {
+      return line.slice(0, CONNECT);
     }
   }
-  return 0;
+  return null;
 }
 
-// Liste les coups possibles
-function availableMoves(boardState) {
-  const moves = [];
-  boardState.forEach((cell, idx) => {
-    if (!cell) moves.push(idx);
-  });
-  return moves;
+function isInside(r, c) {
+  return r >= 0 && r < ROWS && c >= 0 && c < COLS;
 }
 
-// Minimax récursif avec évaluation complète de l'arbre (plateau 3x3 -> faible complexité)
-function minimax(boardState, depth, isMaximizing) {
-  const score = evaluateBoard(boardState);
-  if (score === 10 || score === -10) return score - depth * (score > 0 ? 1 : -1);
-  if (availableMoves(boardState).length === 0) return 0;
+function isBoardFull() {
+  return board[0].every(cell => cell !== EMPTY);
+}
 
-  if (isMaximizing) {
-    let best = -Infinity;
-    for (const move of availableMoves(boardState)) {
-      boardState[move] = aiSymbol;
-      best = Math.max(best, minimax(boardState, depth + 1, false));
-      boardState[move] = null;
-    }
-    return best;
+function switchTurn() {
+  currentPlayer = -currentPlayer;
+  updateTurnStatus();
+}
+
+function endGame({ winner }) {
+  gameOver = true;
+  if (winner === RED) {
+    turnStatus.textContent = 'Le joueur rouge a gagné';
+  } else if (winner === YELLOW) {
+    turnStatus.textContent = mode === 'pvp' ? 'Le joueur jaune a gagné' : 'L\'IA a gagné';
   } else {
-    let best = Infinity;
-    for (const move of availableMoves(boardState)) {
-      boardState[move] = humanSymbol;
-      best = Math.min(best, minimax(boardState, depth + 1, true));
-      boardState[move] = null;
-    }
-    return best;
+    turnStatus.textContent = 'Match nul';
   }
 }
 
-// Calcule le meilleur coup pour un symbole donné (utilisé pour l'IA et pour le conseil)
-function computeBestMove(forSymbol) {
-  const isMaximizing = forSymbol === aiSymbol;
-  let bestVal = isMaximizing ? -Infinity : Infinity;
-  let bestMove = null;
+function flashMessage(text) {
+  messageEl.textContent = text;
+  setTimeout(() => {
+    if (!gameOver) messageEl.textContent = '';
+  }, 1200);
+}
 
-  for (const move of availableMoves(board.slice())) {
-    board[move] = forSymbol;
-    const moveVal = minimax(board, 0, forSymbol !== aiSymbol);
-    board[move] = null;
+function highlightWinners(line) {
+  clearWinnerHighlights();
+  for (const [r, c] of line) {
+    const cell = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+    if (cell) cell.classList.add('winner');
+  }
+}
 
-    if (isMaximizing) {
-      if (moveVal > bestVal) {
-        bestVal = moveVal;
-        bestMove = move;
-      }
-    } else {
-      if (moveVal < bestVal) {
-        bestVal = moveVal;
-        bestMove = move;
-      }
+function clearWinnerHighlights() {
+  boardEl.querySelectorAll('.winner').forEach(el => el.classList.remove('winner'));
+}
+
+function clearSuggestion() {
+  suggestionCol = null;
+  suggestionRow = null;
+  boardEl.classList.remove('suggestion');
+  boardEl.querySelectorAll('.cell').forEach(cell => cell.classList.remove('hint'));
+  boardEl.querySelectorAll('.piece.preview').forEach(p => p.remove());
+}
+
+function highlightSuggestion(col, text) {
+  clearSuggestion();
+  suggestionCol = col;
+  boardEl.classList.add('suggestion');
+  boardEl.style.setProperty('--suggested-col', col);
+  boardEl.querySelectorAll(`.cell[data-col="${col}"]`).forEach(cell => {
+    cell.classList.add('hint');
+  });
+  messageEl.textContent = text ?? `Coup conseillé : colonne ${col + 1}`;
+}
+
+function provideSuggestionPreview(forceText) {
+  if (mode !== 'assist' || currentPlayer === aiPlayer || gameOver) return;
+  const best = computeBestMove(board, currentPlayer, currentPlayer);
+  if (best === null) return;
+  const row = getAvailableRow(best);
+  if (row === null) return;
+
+  const message = forceText
+    ? `Conseil actualisé : colonne ${best + 1}`
+    : `Coup conseillé pré-positionné : colonne ${best + 1}`;
+
+  highlightSuggestion(best, message);
+  suggestionRow = row;
+  placePreviewPiece(row, best, currentPlayer);
+}
+
+function placePreviewPiece(row, col, player) {
+  const cell = boardEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+  if (!cell) return;
+  const preview = document.createElement('div');
+  preview.className = `piece preview ${player === RED ? 'rouge' : 'jaune'}`;
+  cell.appendChild(preview);
+}
+
+function aiMoveWithDelay() {
+  setTimeout(() => {
+    const best = computeBestMove(board, aiPlayer, aiPlayer);
+    if (best !== null && !gameOver) {
+      playMove(best);
+    }
+  }, 220);
+}
+
+function handleAdvice() {
+  if (mode !== 'assist' || currentPlayer === aiPlayer || gameOver) return;
+  provideSuggestionPreview(true);
+}
+
+// ----------- IA MINIMAX -----------
+// L'IA repose sur un Minimax avec élagage alpha-bêta.
+// L'évaluation donne un score positif si la position favorise l'IA, négatif sinon.
+const MAX_DEPTH = 6;
+
+function computeBestMove(state, player, perspective = aiPlayer) {
+  const legalMoves = getLegalMoves(state);
+  let bestScore = -Infinity;
+  let bestMove = legalMoves[0] ?? null;
+
+  // Priorité au centre pour des solutions plus solides
+  const orderedMoves = legalMoves.sort((a, b) => Math.abs(b - 3) - Math.abs(a - 3));
+
+  for (const move of orderedMoves) {
+    const { nextBoard, row } = applyMove(state, move, player);
+    const result = minimax(nextBoard, MAX_DEPTH - 1, false, -Infinity, Infinity, -player, row, move, perspective);
+    if (result > bestScore) {
+      bestScore = result;
+      bestMove = move;
     }
   }
   return bestMove;
 }
 
-function aiPlay() {
-  if (gameOver) return;
-  const move = computeBestMove(aiSymbol);
-  if (move !== null && move !== undefined) {
-    placeMove(move, aiSymbol);
-    processTurn();
+function minimax(state, depth, maximizing, alpha, beta, player, lastRow, lastCol, perspective) {
+  const winner = lastRow !== undefined ? checkLastMoveWinner(state, lastRow, lastCol, -player) : null;
+  if (winner === perspective) return 1000000 + depth; // plus tôt = mieux
+  if (winner === -perspective) return -1000000 - depth;
+  if (isBoardFullState(state)) return 0;
+  if (depth === 0) return heuristicScore(state, perspective);
+
+  const moves = getLegalMoves(state);
+  // tri par proximité du centre
+  moves.sort((a, b) => Math.abs(a - 3) - Math.abs(b - 3));
+
+  if (maximizing) {
+    let value = -Infinity;
+    for (const move of moves) {
+      const { nextBoard, row } = applyMove(state, move, player);
+      const evalScore = minimax(nextBoard, depth - 1, false, alpha, beta, -player, row, move, perspective);
+      value = Math.max(value, evalScore);
+      alpha = Math.max(alpha, value);
+      if (alpha >= beta) break; // élagage
+    }
+    return value;
+  } else {
+    let value = Infinity;
+    for (const move of moves) {
+      const { nextBoard, row } = applyMove(state, move, player);
+      const evalScore = minimax(nextBoard, depth - 1, true, alpha, beta, -player, row, move, perspective);
+      value = Math.min(value, evalScore);
+      beta = Math.min(beta, value);
+      if (alpha >= beta) break;
+    }
+    return value;
   }
 }
 
-function showSuggestion() {
-  if (currentMode !== MODES.ASSIST || gameOver || isAiTurn()) return;
-  // Retire les anciennes suggestions
-  clearSuggestion();
-  const best = computeBestMove(humanSymbol);
-  if (best !== null && best !== undefined) {
-    suggestedIndex = best;
-    const cell = boardEl.querySelector(`[data-index="${best}"]`);
-    if (cell) {
-      cell.classList.add('suggested');
-      resultLabel.textContent = 'Coup conseillé ici';
+function getLegalMoves(state) {
+  const moves = [];
+  for (let c = 0; c < COLS; c++) {
+    if (state[0][c] === EMPTY) moves.push(c);
+  }
+  return moves;
+}
+
+function isBoardFullState(state) {
+  return state[0].every(v => v !== EMPTY);
+}
+
+function applyMove(state, col, player) {
+  const nextBoard = state.map(row => [...row]);
+  for (let r = ROWS - 1; r >= 0; r--) {
+    if (nextBoard[r][col] === EMPTY) {
+      nextBoard[r][col] = player;
+      return { nextBoard, row: r };
     }
   }
+  return { nextBoard: state, row: null };
 }
 
-function clearSuggestion() {
-  if (suggestedIndex !== null) {
-    const old = boardEl.querySelector(`[data-index="${suggestedIndex}"]`);
-    if (old) old.classList.remove('suggested');
+function checkLastMoveWinner(state, row, col, player) {
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, -1],
+  ];
+  for (const [dr, dc] of directions) {
+    let count = 1;
+    count += countDirection(state, row, col, dr, dc, player);
+    count += countDirection(state, row, col, -dr, -dc, player);
+    if (count >= CONNECT) return player;
   }
-  suggestedIndex = null;
+  return null;
 }
 
-// --- Écouteurs ---
-modeSelect.addEventListener('change', () => {
-  // Le bouton d'aide n'est utile qu'en mode assisté
-  resetGame();
-});
+function countDirection(state, row, col, dr, dc, player) {
+  let r = row + dr;
+  let c = col + dc;
+  let count = 0;
+  while (r >= 0 && r < ROWS && c >= 0 && c < COLS && state[r][c] === player) {
+    count++;
+    r += dr;
+    c += dc;
+  }
+  return count;
+}
 
-playerSymbolSelect.addEventListener('change', resetGame);
-starterSelect.addEventListener('change', resetGame);
-resetButton.addEventListener('click', resetGame);
-hintButton.addEventListener('click', showSuggestion);
+// Évaluation heuristique :
+// on parcourt toutes les fenêtres de 4 cases pour attribuer un score
+function heuristicScore(state, player) {
+  let score = 0;
+  // Bonus pour contrôler le centre
+  const centerCol = Math.floor(COLS / 2);
+  let centerCount = 0;
+  for (let r = 0; r < ROWS; r++) {
+    if (state[r][centerCol] === player) centerCount++;
+  }
+  score += centerCount * 6;
 
-// --- Lancement ---
-createBoardUI();
-resetGame();
+  const windows = getAllWindows(state);
+  for (const window of windows) {
+    score += evaluateWindow(window, player);
+  }
+  return score;
+}
+
+function getAllWindows(state) {
+  const windows = [];
+  // Horizontales
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c <= COLS - CONNECT; c++) {
+      windows.push([state[r][c], state[r][c + 1], state[r][c + 2], state[r][c + 3]]);
+    }
+  }
+  // Verticales
+  for (let c = 0; c < COLS; c++) {
+    for (let r = 0; r <= ROWS - CONNECT; r++) {
+      windows.push([state[r][c], state[r + 1][c], state[r + 2][c], state[r + 3][c]]);
+    }
+  }
+  // Diagonales ↘︎
+  for (let r = 0; r <= ROWS - CONNECT; r++) {
+    for (let c = 0; c <= COLS - CONNECT; c++) {
+      windows.push([state[r][c], state[r + 1][c + 1], state[r + 2][c + 2], state[r + 3][c + 3]]);
+    }
+  }
+  // Diagonales ↗︎
+  for (let r = CONNECT - 1; r < ROWS; r++) {
+    for (let c = 0; c <= COLS - CONNECT; c++) {
+      windows.push([state[r][c], state[r - 1][c + 1], state[r - 2][c + 2], state[r - 3][c + 3]]);
+    }
+  }
+  return windows;
+}
+
+function evaluateWindow(window, player) {
+  const opp = -player;
+  const countPlayer = window.filter(v => v === player).length;
+  const countOpp = window.filter(v => v === opp).length;
+  const countEmpty = window.filter(v => v === EMPTY).length;
+
+  // Scores inspirés des heuristiques classiques pour Puissance 4
+  if (countPlayer === 4) return 100000;
+  if (countPlayer === 3 && countEmpty === 1) return 500;
+  if (countPlayer === 2 && countEmpty === 2) return 60;
+  if (countPlayer === 1 && countEmpty === 3) return 6;
+
+  if (countOpp === 3 && countEmpty === 1) return -400;
+  if (countOpp === 2 && countEmpty === 2) return -50;
+
+  return 0;
+}
+// ---------------------------------
