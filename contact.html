@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact | Maxime Lacoste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="container navbar">
+      <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
+      <nav aria-label="Navigation principale">
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets</a></li>
+          <li><a href="cv.html">CV</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="reveal">
+      <h1 class="section-title">Contact</h1>
+      <p class="section-subtitle">
+        Un formulaire simple et mes liens professionnels.
+      </p>
+    </section>
+
+    <section class="contact-grid reveal">
+      <div class="card">
+        <h2>Envoyer un message</h2>
+        <form class="contact-form" data-contact-form>
+          <label>
+            Nom
+            <input type="text" name="nom" required />
+          </label>
+          <label>
+            Email
+            <input type="email" name="email" required />
+          </label>
+          <label>
+            Sujet
+            <input type="text" name="sujet" required />
+          </label>
+          <label>
+            Message
+            <textarea name="message" rows="5" required></textarea>
+          </label>
+          <div class="form-footer">
+            <label class="checkbox">
+              <input type="checkbox" name="consentement" />
+              <span>J’accepte d’être recontacté</span>
+            </label>
+            <button class="button primary" type="submit">Envoyer</button>
+          </div>
+          <p class="form-message" data-form-message aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Mes liens</h2>
+        <div class="contact-links">
+          <div class="contact-item">
+            <strong>GitHub</strong>
+            <a href="https://github.com/AirMaTy" target="_blank" rel="noreferrer">github.com/AirMaTy</a>
+          </div>
+          <div class="contact-item">
+            <strong>LinkedIn</strong>
+            <a href="https://www.linkedin.com/in/lacoste-maxime/" target="_blank" rel="noreferrer">
+              linkedin.com/in/lacoste-maxime/
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Maxime Lacoste</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
