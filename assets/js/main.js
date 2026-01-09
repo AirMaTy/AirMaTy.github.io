@@ -363,10 +363,10 @@ const applyProjectFilter = (values) => {
   const hasResults = cards.some((card) => !card.hidden);
 
   if (emptyMessage) {
-    if (!hasResults) {
+    if (!hasResults && values.length > 0) {
       emptyMessage.textContent = "Aucun projet n'est disponible avec ces filtres.";
     }
-    emptyMessage.hidden = hasResults;
+    emptyMessage.hidden = hasResults || values.length === 0;
   }
 
   if (filterBanner && filterLabel) {
