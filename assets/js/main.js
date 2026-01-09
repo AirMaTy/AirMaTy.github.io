@@ -290,7 +290,12 @@ const clearFilterButton = document.querySelector("[data-clear-filter]");
 const filterControls = document.querySelector("[data-filter-controls]");
 const emptyMessage = document.querySelector("[data-empty-message]");
 
-const normalize = (value) => value.toLowerCase().trim();
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 const competenceOrder = [
   "Réaliser",
   "Optimiser",
@@ -337,7 +342,10 @@ const applyProjectFilter = (values) => {
   const hasResults = cards.some((card) => !card.hidden);
 
   if (emptyMessage) {
-    emptyMessage.hidden = hasResults;
+    if (!hasResults && values.length > 0) {
+      emptyMessage.textContent = "Aucun projet n'est disponible avec ces filtres.";
+    }
+    emptyMessage.hidden = hasResults || values.length === 0;
   }
 
   if (filterBanner && filterLabel) {
