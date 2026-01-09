@@ -324,13 +324,34 @@ const applyProjectFilter = (values) => {
   const sections = Array.from(projectsRoot.querySelectorAll("[data-project-section]"));
   const normalized = values.map(normalize);
 
+  if (normalized.length === 0) {
+    cards.forEach((card) => {
+      card.hidden = false;
+    });
+
+    sections.forEach((section) => {
+      section.hidden = false;
+    });
+
+    if (emptyMessage) {
+      emptyMessage.hidden = true;
+    }
+
+    if (filterBanner && filterLabel) {
+      filterBanner.classList.remove("active");
+      filterLabel.textContent = "Filtre actif :";
+    }
+
+    return;
+  }
+
   cards.forEach((card) => {
     const tags = (card.dataset.competences || "")
       .split(",")
       .map((item) => normalize(item))
       .filter(Boolean);
     const matches =
-      normalized.length === 0 || normalized.every((value) => tags.includes(value));
+      normalized.every((value) => tags.includes(value));
     card.hidden = !matches;
   });
 
@@ -349,13 +370,8 @@ const applyProjectFilter = (values) => {
   }
 
   if (filterBanner && filterLabel) {
-    if (values.length === 0) {
-      filterBanner.classList.remove("active");
-      filterLabel.textContent = "Filtre actif :";
-    } else {
-      filterBanner.classList.add("active");
-      filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
-    }
+    filterBanner.classList.add("active");
+    filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
   }
 };
 
