@@ -348,11 +348,13 @@ const applyProjectFilter = (values) => {
   cards.forEach((card) => {
     const tags = (card.dataset.competences || "")
       .split(",")
-      .map((item) => normalize(item))
+      .map(normalize)
       .filter(Boolean);
-    const matches =
-      normalized.every((value) => tags.includes(value));
-    card.hidden = !matches;
+  
+    // Vrai si le projet contient TOUS les filtres choisis
+    const matchesAllSelected = normalized.every((filter) => tags.includes(filter));
+  
+    card.hidden = !matchesAllSelected;
   });
 
   sections.forEach((section) => {
