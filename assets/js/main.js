@@ -290,7 +290,12 @@ const clearFilterButton = document.querySelector("[data-clear-filter]");
 const filterControls = document.querySelector("[data-filter-controls]");
 const emptyMessage = document.querySelector("[data-empty-message]");
 
-const normalize = (value) => value.toLowerCase().trim();
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 const competenceOrder = [
   "Réaliser",
   "Optimiser",
@@ -319,13 +324,34 @@ const applyProjectFilter = (values) => {
   const sections = Array.from(projectsRoot.querySelectorAll("[data-project-section]"));
   const normalized = values.map(normalize);
 
+  if (normalized.length === 0) {
+    cards.forEach((card) => {
+      card.hidden = false;
+    });
+
+    sections.forEach((section) => {
+      section.hidden = false;
+    });
+
+    if (emptyMessage) {
+      emptyMessage.hidden = true;
+    }
+
+    if (filterBanner && filterLabel) {
+      filterBanner.classList.remove("active");
+      filterLabel.textContent = "Filtre actif :";
+    }
+
+    return;
+  }
+
   cards.forEach((card) => {
     const tags = (card.dataset.competences || "")
       .split(",")
       .map((item) => normalize(item))
       .filter(Boolean);
     const matches =
-      normalized.length === 0 || normalized.every((value) => tags.includes(value));
+      normalized.every((value) => tags.includes(value));
     card.hidden = !matches;
   });
 
@@ -337,17 +363,15 @@ const applyProjectFilter = (values) => {
   const hasResults = cards.some((card) => !card.hidden);
 
   if (emptyMessage) {
+    if (!hasResults) {
+      emptyMessage.textContent = "Aucun projet n'est disponible avec ces filtres.";
+    }
     emptyMessage.hidden = hasResults;
   }
 
   if (filterBanner && filterLabel) {
-    if (values.length === 0) {
-      filterBanner.classList.remove("active");
-      filterLabel.textContent = "Filtre actif :";
-    } else {
-      filterBanner.classList.add("active");
-      filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
-    }
+    filterBanner.classList.add("active");
+    filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
   }
 };
 
