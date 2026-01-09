@@ -316,54 +316,47 @@ const updateUrl = (values) => {
 };
 
 const applyProjectFilter = (values) => {
-  if (!projectsRoot) {
-    return;
-  }
+  if (!projectsRoot) return;
 
   const cards = Array.from(projectsRoot.querySelectorAll(".project-card"));
   const sections = Array.from(projectsRoot.querySelectorAll("[data-project-section]"));
   const normalized = values.map(normalize);
 
+  // 1) Aucun filtre => tout afficher
   if (normalized.length === 0) {
-    cards.forEach((card) => {
-      card.hidden = false;
-    });
+    cards.forEach((card) => card.removeAttribute("hidden"));
+    sections.forEach((section) => section.removeAttribute("hidden"));
 
-    sections.forEach((section) => {
-      section.hidden = false;
-    });
-
-    if (emptyMessage) {
-      emptyMessage.hidden = true;
-    }
+    if (emptyMessage) emptyMessage.hidden = true;
 
     if (filterBanner && filterLabel) {
       filterBanner.classList.remove("active");
       filterLabel.textContent = "Filtre actif :";
     }
-
     return;
   }
 
+  // 2) Filtrer les cartes
   cards.forEach((card) => {
     const tags = (card.dataset.competences || "")
       .split(",")
       .map(normalize)
       .filter(Boolean);
-  
-    // Vrai si le projet contient TOUS les filtres choisis
+
     const matchesAllSelected = normalized.every((filter) => tags.includes(filter));
-  
-    card.hidden = !matchesAllSelected;
+
+    // IMPORTANT : force l'attribut HTML hidden
+    card.toggleAttribute("hidden", !matchesAllSelected);
   });
 
+  // 3) Cacher les sections vides
   sections.forEach((section) => {
     const visibleCards = section.querySelectorAll(".project-card:not([hidden])");
-    section.hidden = visibleCards.length === 0;
+    section.toggleAttribute("hidden", visibleCards.length === 0);
   });
 
-  const hasResults = cards.some((card) => !card.hidden);
-
+  // 4) Message vide : affiché UNIQUEMENT si filtres actifs ET aucun résultat
+  const hasResults = cards.some((card) => !card.hasAttribute("hidden"));
   if (emptyMessage) {
     if (!hasResults && values.length > 0) {
       emptyMessage.textContent = "Aucun projet n'est disponible avec ces filtres.";
@@ -371,11 +364,13 @@ const applyProjectFilter = (values) => {
     emptyMessage.hidden = hasResults || values.length === 0;
   }
 
+  // 5) Banner
   if (filterBanner && filterLabel) {
     filterBanner.classList.add("active");
     filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
   }
 };
+
 
 if (projectsRoot && filterControls) {
   const checkboxes = Array.from(filterControls.querySelectorAll("input[type=checkbox]"));
