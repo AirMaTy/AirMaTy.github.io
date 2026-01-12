@@ -111,6 +111,47 @@ const registerModal = (modal, { onClose } = {}) => {
 };
 
 document.addEventListener("keydown", (event) => {
+  if (lightboxState.isOpen) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeLightbox();
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showLightboxImage(lightboxState.index - 1);
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showLightboxImage(lightboxState.index + 1);
+      return;
+    }
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const focusable = getFocusableElements(lightboxModal);
+    if (focusable.length === 0) {
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+    return;
+  }
+
   if (!modalState.activeModal) {
     return;
   }
@@ -214,15 +255,138 @@ if (levelModal && modalBody && modalTitle) {
   });
 }
 
+const projectImages = window.projectImages || {};
 const projectModal = document.querySelector("#project-modal");
 const projectModalTitle = document.querySelector("#project-modal-title");
 const projectModalText = document.querySelector("[data-project-modal-text]");
 const projectModalGallery = document.querySelector("[data-project-modal-gallery]");
 const projectTriggers = document.querySelectorAll("[data-project-trigger]");
+const lightboxModal = document.querySelector("#lightbox-modal");
+const lightboxImage = document.querySelector("[data-lightbox-image]");
+const lightboxCaption = document.querySelector("[data-lightbox-caption]");
+const lightboxFallback = document.querySelector("[data-lightbox-fallback]");
+const lightboxPrev = document.querySelector("[data-lightbox-prev]");
+const lightboxNext = document.querySelector("[data-lightbox-next]");
+const lightboxCloseButtons = document.querySelectorAll("[data-lightbox-close]");
+const lightboxContent = document.querySelector(".lightbox__content");
+const lightboxState = {
+  isOpen: false,
+  images: [],
+  index: 0,
+  title: "",
+  trigger: null,
+  previousOverflow: ""
+};
+
+const showLightboxImage = (nextIndex) => {
+  if (!lightboxState.images.length || !lightboxImage || !lightboxCaption || !lightboxFallback) {
+    return;
+  }
+
+  const total = lightboxState.images.length;
+  const index = (nextIndex + total) % total;
+  const src = lightboxState.images[index];
+
+  lightboxState.index = index;
+  lightboxImage.hidden = false;
+  lightboxFallback.hidden = true;
+  lightboxImage.src = src;
+  lightboxImage.alt = `${lightboxState.title} — ${index + 1}`;
+  lightboxCaption.textContent = `Image ${index + 1} / ${total}`;
+};
+
+const openLightbox = (images, index, title, trigger) => {
+  if (!lightboxModal || !lightboxContent) {
+    return;
+  }
+
+  if (!images || images.length === 0) {
+    return;
+  }
+
+  lightboxState.images = images;
+  lightboxState.index = index;
+  lightboxState.title = title;
+  lightboxState.trigger = trigger || null;
+  lightboxState.isOpen = true;
+  lightboxState.previousOverflow = document.body.style.overflow;
+  document.body.classList.add("no-scroll");
+  lightboxModal.classList.add("is-open");
+  lightboxModal.setAttribute("aria-hidden", "false");
+  showLightboxImage(index);
+  lightboxContent.focus();
+};
+
+const closeLightbox = () => {
+  if (!lightboxModal) {
+    return;
+  }
+
+  lightboxModal.classList.remove("is-open");
+  lightboxModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("no-scroll");
+  document.body.style.overflow = lightboxState.previousOverflow;
+  lightboxState.isOpen = false;
+  lightboxState.images = [];
+  lightboxState.index = 0;
+  lightboxState.title = "";
+
+  if (lightboxState.trigger) {
+    lightboxState.trigger.focus();
+  }
+  lightboxState.trigger = null;
+};
+
+if (lightboxImage) {
+  lightboxImage.addEventListener("error", () => {
+    if (lightboxFallback) {
+      lightboxFallback.hidden = false;
+    }
+    lightboxImage.hidden = true;
+    console.error(`Image introuvable : ${lightboxImage.src}`);
+  });
+}
+
+if (lightboxPrev) {
+  lightboxPrev.addEventListener("click", () => showLightboxImage(lightboxState.index - 1));
+}
+
+if (lightboxNext) {
+  lightboxNext.addEventListener("click", () => showLightboxImage(lightboxState.index + 1));
+}
+
+if (lightboxCloseButtons.length > 0) {
+  lightboxCloseButtons.forEach((button) => {
+    button.addEventListener("click", () => closeLightbox());
+  });
+}
+
+if (lightboxModal) {
+  lightboxModal.addEventListener("click", (event) => {
+    if (event.target === lightboxModal) {
+      closeLightbox();
+    }
+  });
+}
+
+if (lightboxContent) {
+  lightboxContent.addEventListener("click", (event) => {
+    if (
+      event.target === lightboxContent ||
+      event.target === lightboxCaption ||
+      event.target === lightboxFallback
+    ) {
+      closeLightbox();
+    }
+  });
+}
 
 if (projectModal && projectModalTitle && projectModalText && projectModalGallery) {
   registerModal(projectModal, {
     onClose: () => {
+      if (lightboxState.isOpen) {
+        closeLightbox();
+      }
       projectModalTitle.textContent = "";
       projectModalText.textContent = "";
       projectModalGallery.innerHTML = "";
@@ -238,33 +402,48 @@ if (projectModal && projectModalTitle && projectModalText && projectModalGallery
 
       const title = card.dataset.modalTitle || card.querySelector("h3")?.textContent || "";
       const text = card.dataset.modalText || "";
-      const images = (card.dataset.modalImages || "")
+      const slug = card.dataset.projectSlug || "";
+      const mappedImages = Array.isArray(projectImages[slug]) ? projectImages[slug] : [];
+      const fallbackImages = (card.dataset.modalImages || "")
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean);
+      const images = mappedImages.length > 0 ? mappedImages : fallbackImages;
 
       projectModalTitle.textContent = title;
       projectModalText.textContent = text;
       projectModalGallery.innerHTML = "";
 
       if (images.length > 0) {
-        images.forEach((src) => {
-          const figure = document.createElement("div");
-          figure.className = "modal__gallery-item";
+        images.forEach((src, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "modal__gallery-item modal__gallery-button";
+          button.setAttribute("aria-label", `Voir l'image ${index + 1} en plein écran`);
+
           const image = document.createElement("img");
           image.src = src;
-          image.alt = title;
-          figure.appendChild(image);
-          projectModalGallery.appendChild(figure);
+          image.alt = `${title} — ${index + 1}`;
+          image.loading = "lazy";
+          image.addEventListener("error", () => {
+            console.error(`Image introuvable : ${src}`);
+            button.classList.add("placeholder");
+            button.textContent = "Image indisponible";
+            button.disabled = true;
+          });
+
+          button.appendChild(image);
+          button.addEventListener("click", () => {
+            openLightbox(images, index, title, button);
+          });
+
+          projectModalGallery.appendChild(button);
         });
       } else {
-        const placeholders = 3;
-        for (let index = 0; index < placeholders; index += 1) {
-          const placeholder = document.createElement("div");
-          placeholder.className = "modal__gallery-item placeholder";
-          placeholder.textContent = "Image à venir";
-          projectModalGallery.appendChild(placeholder);
-        }
+        const placeholder = document.createElement("div");
+        placeholder.className = "modal__gallery-item placeholder";
+        placeholder.textContent = "Aucune image disponible pour ce projet.";
+        projectModalGallery.appendChild(placeholder);
       }
 
       openModal(projectModal, trigger);
@@ -290,7 +469,12 @@ const clearFilterButton = document.querySelector("[data-clear-filter]");
 const filterControls = document.querySelector("[data-filter-controls]");
 const emptyMessage = document.querySelector("[data-empty-message]");
 
-const normalize = (value) => value.toLowerCase().trim();
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 const competenceOrder = [
   "Réaliser",
   "Optimiser",
@@ -319,13 +503,34 @@ const applyProjectFilter = (values) => {
   const sections = Array.from(projectsRoot.querySelectorAll("[data-project-section]"));
   const normalized = values.map(normalize);
 
+  if (normalized.length === 0) {
+    cards.forEach((card) => {
+      card.hidden = false;
+    });
+
+    sections.forEach((section) => {
+      section.hidden = false;
+    });
+
+    if (emptyMessage) {
+      emptyMessage.hidden = true;
+    }
+
+    if (filterBanner && filterLabel) {
+      filterBanner.classList.remove("active");
+      filterLabel.textContent = "Filtre actif :";
+    }
+
+    return;
+  }
+
   cards.forEach((card) => {
     const tags = (card.dataset.competences || "")
       .split(",")
       .map((item) => normalize(item))
       .filter(Boolean);
     const matches =
-      normalized.length === 0 || normalized.every((value) => tags.includes(value));
+      normalized.every((value) => tags.includes(value));
     card.hidden = !matches;
   });
 
@@ -337,17 +542,15 @@ const applyProjectFilter = (values) => {
   const hasResults = cards.some((card) => !card.hidden);
 
   if (emptyMessage) {
+    if (!hasResults) {
+      emptyMessage.textContent = "Aucun projet n'est disponible avec ces filtres.";
+    }
     emptyMessage.hidden = hasResults;
   }
 
   if (filterBanner && filterLabel) {
-    if (values.length === 0) {
-      filterBanner.classList.remove("active");
-      filterLabel.textContent = "Filtre actif :";
-    } else {
-      filterBanner.classList.add("active");
-      filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
-    }
+    filterBanner.classList.add("active");
+    filterLabel.textContent = `Filtre actif : ${values.join(", ")}`;
   }
 };
 
