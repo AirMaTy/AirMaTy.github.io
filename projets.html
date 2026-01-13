@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projets | Maxime Lacoste</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <div class="container navbar">
+        <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
+        <nav aria-label="Navigation principale">
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="parcours.html">Parcours</a></li>
+            <li><a href="competences.html">Compétences</a></li>
+            <li><a href="projets.html">Projets</a></li>
+            <li><a href="cv.html">CV</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container" data-projects-root>
+      <!-- INTRO -->
+      <section class="reveal">
+        <h1 class="section-title">Projets</h1>
+        <p class="section-subtitle">
+          Une sélection de projets académiques, professionnels et personnels
+          illustrant la mise en pratique des compétences du BUT Informatique et
+          mon approche concrète des systèmes et du développement.
+        </p>
+      </section>
+
+      <!-- FILTRES -->
+      <section class="filter-panel reveal">
+        <h2 class="section-title">Filtrer par compétence</h2>
+        <div class="filter-controls" data-filter-controls>
+          <label class="filter-option"
+            ><input type="checkbox" value="Réaliser" />
+            <span>Réaliser</span></label
+          >
+          <label class="filter-option"
+            ><input type="checkbox" value="Optimiser" />
+            <span>Optimiser</span></label
+          >
+          <label class="filter-option"
+            ><input type="checkbox" value="Administrer" />
+            <span>Administrer</span></label
+          >
+          <label class="filter-option"
+            ><input type="checkbox" value="Gérer" /> <span>Gérer</span></label
+          >
+          <label class="filter-option"
+            ><input type="checkbox" value="Conduire" />
+            <span>Conduire</span></label
+          >
+          <label class="filter-option"
+            ><input type="checkbox" value="Collaborer" />
+            <span>Collaborer</span></label
+          >
+        </div>
+      </section>
+
+      <section class="reveal">
+        <div class="filter-banner" data-filter-banner>
+          <span data-filter-label>Filtre actif :</span>
+          <button class="button" type="button" data-clear-filter>
+            Réinitialiser
+          </button>
+        </div>
+        <p class="empty-message" data-empty-message hidden>
+          Aucun projet ne correspond aux filtres sélectionnés.
+        </p>
+      </section>
+
+      <!-- PROJETS PROFESSIONNELS -->
+      <section class="project-section reveal" data-project-section>
+        <h2 class="section-title">Projets professionnels</h2>
+        <div class="project-grid">
+          <article
+            class="card project-card"
+            data-project-slug="auto-completion-cerfa"
+            data-competences="Réaliser,Administrer"
+            data-modal-title="Auto-complétion de CERFA"
+            data-modal-text=
+"Cette application a été développée en Python afin d’automatiser le remplissage des formulaires CERFA à partir des documents fournis par le client (pièce d’identité, justificatif de domicile, carte grise, etc.).
+
+L’objectif est de réduire le temps de traitement des dossiers tout en limitant les erreurs liées à la saisie manuelle. Les documents sont analysés via des APIs d’extraction de données et d’OCR, notamment Mindee, afin d’en extraire automatiquement les informations nécessaires (numéro d'immatriculation, numéro VIN, informations sur le nouveau titulaire...), qui sont ensuite utilisées pour préremplir le formulaire.
+
+Une prévisualisation permet de vérifier les données avant validation finale. De plus, la sélection du nombre de pages envoyées à l’API permet de maîtriser les coûts d’utilisation, garantissant un bon équilibre entre automatisation, contrôle humain et optimisation du budget."
+            data-modal-images=""
+          >
+            <h3>Auto-complétion de CERFA</h3>
+            <div class="project-meta">
+              <span class="meta-context"
+                >Contexte : Entreprise (Carington)</span
+              >
+              <span class="meta-type">• Automatisation</span>
+            </div>
+            <p>
+              Développement d’un système d’auto-complétion de formulaires CERFA
+              à partir de documents clients, avec extraction et traitement
+              automatisés des données.
+            </p>
+            <p><strong>Outils :</strong> Python, OCR, API, Linux</p>
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#realiser"
+                  ><span class="pill">Réaliser</span></a
+                >
+                <a class="pill-link" href="competences.html#administrer"
+                  ><span class="pill">Administrer</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="card project-card"
+            data-project-slug="automatisation-processus-metiers"
+            data-competences="Administrer,Collaborer"
+            data-modal-title="Automatisation de processus métiers"
+            data-modal-text=
+"Ce projet consiste en la conception et la mise en place de processus d’automatisation visant à réduire les tâches répétitives et à fiabiliser les opérations métiers internes.
+
+Des scripts ont été développés et orchestrés afin de traiter automatiquement différentes actions (traitement de données, gestion de fichiers, déclenchements conditionnels, planification), en s’intégrant aux outils et workflows existants.
+
+L’objectif est d’améliorer la productivité, de limiter les erreurs humaines et de garantir une exécution cohérente et traçable des opérations, tout en conservant une supervision et un contrôle adaptés aux besoins métier."
+            data-modal-images=""
+          >
+            <h3>Automatisation de processus métiers</h3>
+            <div class="project-meta">
+              <span class="meta-context"
+                >Contexte : Entreprise (Carington)</span
+              >
+              <span class="meta-type">• Automatisation</span>
+            </div>
+            <p>
+              Mise en place de chaînes d’automatisation orchestrant plusieurs
+              scripts et services afin de réduire significativement les tâches
+              manuelles internes.
+            </p>
+            <p>
+              <strong>Outils :</strong> Linux, Scripting, Planification, Cron
+            </p>
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#administrer"
+                  ><span class="pill">Administrer</span></a
+                >
+                <a class="pill-link" href="competences.html#collaborer"
+                  ><span class="pill">Collaborer</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- PROJETS UNIVERSITAIRES -->
+      <section class="project-section reveal" data-project-section>
+        <h2 class="section-title">Projets universitaires</h2>
+        <div class="project-grid">
+          <article
+            class="card project-card"
+            data-project-slug="facebook-like-club-photo"
+            data-competences="Réaliser,Gérer"
+            data-modal-title="Facebook-like Club photo de Nailloux"
+            data-modal-text=
+"Ce projet consiste en la conception et le développement d’une application web de type réseau social dédiée à un club photo.
+
+La plateforme permet aux membres de gérer leur profil, de publier des photos, d’interagir via des commentaires et de participer à la vie du club dans un espace collaboratif. Une attention particulière a été portée à l’organisation des contenus et à la gestion des interactions entre utilisateurs.
+
+L’objectif du projet était de mettre en pratique les principes du développement web, de la gestion des données et du travail en équipe, tout en répondant à un besoin concret de communication et de partage au sein d’une association."
+            data-modal-images=""
+          >
+            <h3>Club photo de Nailloux</h3>
+            <div class="project-meta">
+              <span class="meta-context">Contexte : Université</span>
+              <span class="meta-type">• Développement web</span>
+            </div>
+            <p>
+              Développement d’une application web de type réseau social destinée
+              à un club photo, avec gestion des contenus et des interactions
+              entre utilisateurs.
+            </p>
+            <p><strong>Outils :</strong> Web, React, SQL, Gestion de projet</p>
+
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#realiser"
+                  ><span class="pill">Réaliser</span></a
+                >
+                <a class="pill-link" href="competences.html#gerer"
+                  ><span class="pill">Gérer</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="card project-card"
+            data-project-slug="infrastructure-reseau-multi-sites"
+            data-competences="Administrer,Conduire"
+            data-modal-title="Déploiement d’une infrastructure réseau multi-sites"
+            data-modal-text=
+"Ce projet de SAE consiste en la conception et le déploiement d’une infrastructure réseau multi-sites dans un contexte pédagogique.
+
+L’infrastructure met en œuvre la segmentation du réseau, des services d’infrastructure centralisés et le déploiement d’applications, tout en assurant la communication entre plusieurs sites. Le projet inclut également la configuration des équipements réseau et des systèmes afin de garantir la disponibilité et la cohérence des services.
+
+L’objectif est de mettre en pratique les notions d’architecture réseau, d’administration système et de conduite de projet, à travers un travail en équipe reproduisant les contraintes d’un environnement professionnel."
+            data-modal-images=""
+          >
+            <h3>Déploiement d’une infrastructure réseau multi-sites</h3>
+            <div class="project-meta">
+              <span class="meta-context">Contexte : Université</span>
+              <span class="meta-type">• Systèmes & réseau</span>
+            </div>
+            <p>
+              Conception et déploiement d’une infrastructure réseau complète
+              dans un environnement pédagogique, incluant plusieurs sites, des
+              services d’infrastructure et le déploiement d’applications
+              conteneurisées.
+            </p>
+            <p>
+              <strong>Outils :</strong> Linux, Architecture réseau, Services
+              d’infrastructure, Conteneurisation, Équipements Cisco
+            </p>
+
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#administrer"
+                  ><span class="pill">Administrer</span></a
+                >
+                <a class="pill-link" href="competences.html#conduire"
+                  ><span class="pill">Conduire</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="card project-card"
+            data-project-slug="gestion-equipe-sportive"
+            data-competences="Réaliser,Gérer"
+            data-modal-title="Application de gestion d’équipe sportive"
+            data-modal-text=
+"Ce projet consiste en le développement d’une application web dédiée à la gestion d’une équipe sportive.
+
+L’application permet de gérer les profils des membres, le calendrier des matchs ainsi que le suivi des statistiques individuelles et collectives. Elle centralise les informations essentielles afin de faciliter l’organisation et le suivi de l’équipe.
+
+L’objectif du projet était de mettre en pratique les bases du développement web et de la gestion des données, tout en répondant à un besoin fonctionnel simple et structuré dans un contexte pédagogique."
+            data-modal-images=""
+          >
+            <h3>Application de gestion d’équipe sportive</h3>
+            <div class="project-meta">
+              <span class="meta-context">Contexte : Université</span>
+              <span class="meta-type">• Développement web</span>
+            </div>
+            <p>
+              Développement d’une application web fictive permettant la gestion
+              d’une équipe sportive : membres, matchs et suivi des statistiques.
+            </p>
+            <p><strong>Outils :</strong> HTML, CSS, PHP, SQL</p>
+
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#realiser"
+                  ><span class="pill">Réaliser</span></a
+                >
+                <a class="pill-link" href="competences.html#gerer"
+                  ><span class="pill">Gérer</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- PROJETS PERSONNELS -->
+      <section class="project-section reveal" data-project-section>
+        <h2 class="section-title">Projets personnels</h2>
+        <div class="project-grid">
+          <article
+            class="card project-card"
+            data-project-slug="infrastructure-serveur-personnelle"
+            data-competences="Administrer,Conduire"
+            data-modal-title="Infrastructure serveur personnelle sécurisée"
+            data-modal-text=
+"Ce projet personnel consiste en la mise en place et l’administration d’une infrastructure serveur auto-hébergée à domicile, destinée à fournir différents services à usage personnel.
+
+L’infrastructure permet notamment de mettre à disposition un espace de stockage de type NAS, un serveur multimédia (Plex) ainsi que des services applicatifs tels qu’un serveur Minecraft. Les services sont organisés et administrés afin d’assurer leur disponibilité et leur bon fonctionnement.
+
+Ce projet m’a permis de développer mes compétences en administration système, en gestion de services auto-hébergés et en configuration d’un environnement serveur adapté à des usages concrets du quotidien."
+            data-modal-images=""
+          >
+            <h3>Infrastructure serveur personnelle sécurisée</h3>
+            <div class="project-meta">
+              <span class="meta-context">Contexte : Personnel</span>
+              <span class="meta-type">• Systèmes & réseau</span>
+            </div>
+            <p>
+              Mise en place et administration d’une infrastructure serveur
+              personnelle incluant des services auto-hébergés, du stockage et
+              des mécanismes de sécurisation des accès.
+            </p>
+            <p>
+              <strong>Outils :</strong> Linux, Auto-hébergement, Services
+              d’infrastructure, Sécurité des systèmes
+            </p>
+
+            <div class="project-footer">
+              <div class="pills">
+                <a class="pill-link" href="competences.html#administrer"
+                  ><span class="pill">Administrer</span></a
+                >
+                <a class="pill-link" href="competences.html#conduire"
+                  ><span class="pill">Conduire</span></a
+                >
+              </div>
+              <button
+                class="action-button project-view"
+                type="button"
+                data-project-trigger
+                aria-haspopup="dialog"
+                aria-controls="project-modal"
+                aria-expanded="false"
+              >
+                Voir
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div
+      class="modal modal--project"
+      id="project-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+      <div
+        class="modal__content"
+        role="document"
+        aria-labelledby="project-modal-title"
+        tabindex="-1"
+      >
+        <button
+          class="modal__close"
+          type="button"
+          data-modal-close
+          aria-label="Fermer"
+        >
+          ×
+        </button>
+        <h2 id="project-modal-title" class="modal__title"></h2>
+        <div class="modal__body modal__body--project">
+          <p class="modal__text" data-project-modal-text></p>
+          <div class="modal__gallery" data-project-modal-gallery>
+            <!-- TODO: Remplacer ces emplacements par les captures réelles des projets. -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal modal--lightbox"
+      id="lightbox-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-lightbox-close></div>
+      <div
+        class="lightbox__content"
+        role="document"
+        aria-label="Visionneuse d'image"
+        tabindex="-1"
+      >
+        <button
+          class="lightbox__close"
+          type="button"
+          data-lightbox-close
+          aria-label="Fermer l'image"
+        >
+          ×
+        </button>
+        <button
+          class="lightbox__nav lightbox__nav--prev"
+          type="button"
+          data-lightbox-prev
+          aria-label="Image précédente"
+        >
+          ‹
+        </button>
+        <figure class="lightbox__figure">
+          <img
+            class="lightbox__image"
+            data-lightbox-image
+            alt=""
+            loading="lazy"
+          />
+          <figcaption
+            class="lightbox__caption"
+            data-lightbox-caption
+          ></figcaption>
+          <p class="lightbox__fallback" data-lightbox-fallback hidden>
+            Impossible de charger cette image.
+          </p>
+        </figure>
+        <button
+          class="lightbox__nav lightbox__nav--next"
+          type="button"
+          data-lightbox-next
+          aria-label="Image suivante"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <p>© 2026 Maxime Lacoste</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/projects-data.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
