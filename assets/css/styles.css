@@ -782,6 +782,8 @@ section {
   padding: 0;
   cursor: pointer;
   text-align: left;
+  display: grid;
+  place-items: center;
 }
 
 .modal__gallery-button:disabled {
@@ -796,7 +798,7 @@ section {
 .modal--project .modal__gallery-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .modal__gallery-item.placeholder {
