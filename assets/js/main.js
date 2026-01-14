@@ -1,8 +1,51 @@
-﻿const i18n = window.i18n;
+document.documentElement.classList.add("js");
+
+const i18n = window.i18n;
 const t = (key, vars) =>
   i18n && typeof i18n.t === "function" ? i18n.t(key, vars) : key;
 const get = (key) =>
   i18n && typeof i18n.get === "function" ? i18n.get(key) : null;
+
+const navToggle = document.querySelector("[data-nav-toggle]");
+const navMenu = document.querySelector("[data-nav]");
+
+if (navToggle && navMenu) {
+  const setNavState = (isOpen) => {
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+    navMenu.classList.toggle("is-open", isOpen);
+  };
+
+  navToggle.addEventListener("click", () => {
+    const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+    setNavState(!isOpen);
+  });
+
+  navMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.matchMedia("(min-width: 900px)").matches) {
+        return;
+      }
+      setNavState(false);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.classList.contains("is-open")) {
+      return;
+    }
+    if (navMenu.contains(event.target) || navToggle.contains(event.target)) {
+      return;
+    }
+    setNavState(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navMenu.classList.contains("is-open")) {
+      setNavState(false);
+      navToggle.focus();
+    }
+  });
+}
 
 const revealTargets = document.querySelectorAll(".reveal");
 

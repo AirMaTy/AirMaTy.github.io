@@ -12,7 +12,9 @@
         competences: "Compétences",
         projets: "Projets",
         cv: "CV",
-        contact: "Contact"
+        contact: "Contact",
+        menu: "Menu",
+        menuAria: "Ouvrir ou fermer le menu"
       },
       pageTitles: {
         home: "Maxime Lacoste | Portfolio",
@@ -88,6 +90,8 @@
             title: "Parcours universitaire en informatique | Alternance",
             meta:
               "IUT de Toulouse - 2023 - 2026 - Formation universitaire en informatique, spécialité applications communicantes et sécurisées",
+            metaBut:
+              "IUT de Toulouse - 2023 - 2026 - BUT Informatique, spécialité applications communicantes et sécurisées",
             item1: "Conception et développement d'applications logicielles et web.",
             item2:
               "Mise en œuvre de services communicants et d'interactions entre applications.",
@@ -111,7 +115,20 @@
             item2: "Découverte des systèmes techniques et de l'approche projet.",
             item3: "Travail en équipe, restitution orale et structuration de la pensée."
           }
+        },
+        jobs: {
+          title: "Job étudiant",
+          cerp: {
+            title: "Préparateur de commande répartition pharmaceutique | Cerp Rouen",
+            meta: "Cerp Rouen - Balma, France - CDI - Depuis 2023",
+            item1: "Préparation de commandes en zone froide et en zone tempérée",
+            item2: "Préparation de commandes de grande volumétrie (grosses quantités, cartons)",
+            item3: "Rangement et organisation des zones de stockage",
+            item4:
+              "Respect des procédures, de la traçabilité et des règles d'hygiène et de sécurité"
+          }
         }
+
       },
       competences: {
         title: "Compétences",
@@ -310,7 +327,9 @@
         competences: "Skills",
         projets: "Projects",
         cv: "Resume",
-        contact: "Contact"
+        contact: "Contact",
+        menu: "Menu",
+        menuAria: "Open or close the menu"
       },
       pageTitles: {
         home: "Maxime Lacoste | Portfolio",
@@ -386,6 +405,8 @@
             title: "University program in computer science | Work-study",
             meta:
               "IUT of Toulouse - 2023 - 2026 - University training in computer science, specialization in secure communicating applications",
+            metaBut:
+              "IUT of Toulouse - 2023 - 2026 - University Bachelor of Technology (BUT) in Computer Science (France), specialization in secure communicating applications",
             item1: "Design and development of software and web applications.",
             item2: "Implementation of communicating services and interactions between applications.",
             item3: "Foundations in systems, networks, and security applied to applications."
@@ -405,7 +426,19 @@
             item2: "Discovery of technical systems and the project approach.",
             item3: "Teamwork, oral presentation, and structured thinking."
           }
+        },
+        jobs: {
+          title: "Student job",
+          cerp: {
+            title: "Order Picker pharmaceutical distribution | Cerp Rouen",
+            meta: "Cerp Rouen - Balma, France - Permanent contract (CDI) - Since 2023",
+            item1: "Order picking in cold storage and ambient temperature areas",
+            item2: "Preparation of high-volume orders (large quantities, carton-based orders)",
+            item3: "Storage organization and restocking",
+            item4: "Compliance with procedures, traceability, hygiene and safety rules"
+          }
         }
+
       },
       competences: {
         title: "Skills",

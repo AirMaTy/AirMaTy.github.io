@@ -1,103 +1,114 @@
-﻿<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-i18n="pageTitles.contact">Contact | Maxime Lacoste</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/styles.css" />
-  </head>
-  <body>
-    <header>
-      <div class="container navbar">
-        <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
-        <nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
-          <ul>
-            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
-            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
-            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
-            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
-            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
-            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
-          </ul>
-        </nav>
-        <div class="navbar-actions">
-          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
-            EN
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <main class="container">
-      <section class="reveal">
-        <h1 class="section-title" data-i18n="contact.title">Contact</h1>
-        <p class="section-subtitle" data-i18n="contact.subtitle">
-          Un formulaire simple et mes liens professionnels.
-        </p>
-      </section>
-
-      <section class="contact-grid reveal">
-        <div class="card">
-          <h2 data-i18n="contact.form.title">Envoyer un message</h2>
-          <form class="contact-form" data-contact-form>
-            <label>
-              <span data-i18n="contact.form.name">Nom</span>
-              <input type="text" name="nom" required />
-            </label>
-            <label>
-              <span data-i18n="contact.form.email">Email</span>
-              <input type="email" name="email" required />
-            </label>
-            <label>
-              <span data-i18n="contact.form.subject">Sujet</span>
-              <input type="text" name="sujet" required />
-            </label>
-            <label>
-              <span data-i18n="contact.form.message">Message</span>
-              <textarea name="message" rows="5" required></textarea>
-            </label>
-            <div class="form-footer">
-              <label class="checkbox">
-                <input type="checkbox" name="consentement" />
-                <span data-i18n="contact.form.consent">J'accepte d'être recontacté</span>
-              </label>
-              <button class="button primary" type="submit" data-i18n="contact.form.submit">Envoyer</button>
-            </div>
-            <p class="form-message" data-form-message aria-live="polite"></p>
-          </form>
-        </div>
-
-        <div class="card">
-          <h2 data-i18n="contact.links.title">Mes liens</h2>
-          <div class="contact-links">
-            <div class="contact-item">
-              <strong>GitHub</strong>
-              <a href="https://github.com/AirMaTy" target="_blank" rel="noreferrer">github.com/AirMaTy</a>
-            </div>
-            <div class="contact-item">
-              <strong>LinkedIn</strong>
-              <a href="https://www.linkedin.com/in/lacoste-maxime/" target="_blank" rel="noreferrer">
-                linkedin.com/in/lacoste-maxime/
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="container">
-        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
-      </div>
-    </footer>
-
-    <script src="assets/js/i18n.js"></script>
-    <script src="assets/js/main.js"></script>
-  </body>
-</html>
+﻿<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="pageTitles.contact">Contact | Maxime Lacoste</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
+        <button
+          class="nav-toggle"
+          type="button"
+          data-nav-toggle
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          data-i18n="nav.menu"
+          data-i18n-aria-label="nav.menuAria"
+        >
+          Menu
+        </button>
+        <nav class="nav-menu" id="primary-nav" data-nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
+          <ul>
+            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
+            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
+            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
+            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="navbar-actions">
+          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
+            EN
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="reveal">
+        <h1 class="section-title" data-i18n="contact.title">Contact</h1>
+        <p class="section-subtitle" data-i18n="contact.subtitle">
+          Un formulaire simple et mes liens professionnels.
+        </p>
+      </section>
+
+      <section class="contact-grid reveal">
+        <div class="card">
+          <h2 data-i18n="contact.form.title">Envoyer un message</h2>
+          <form class="contact-form" data-contact-form>
+            <label>
+              <span data-i18n="contact.form.name">Nom</span>
+              <input type="text" name="nom" required />
+            </label>
+            <label>
+              <span data-i18n="contact.form.email">Email</span>
+              <input type="email" name="email" required />
+            </label>
+            <label>
+              <span data-i18n="contact.form.subject">Sujet</span>
+              <input type="text" name="sujet" required />
+            </label>
+            <label>
+              <span data-i18n="contact.form.message">Message</span>
+              <textarea name="message" rows="5" required></textarea>
+            </label>
+            <div class="form-footer">
+              <label class="checkbox">
+                <input type="checkbox" name="consentement" />
+                <span data-i18n="contact.form.consent">J'accepte d'être recontacté</span>
+              </label>
+              <button class="button primary" type="submit" data-i18n="contact.form.submit">Envoyer</button>
+            </div>
+            <p class="form-message" data-form-message aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="contact.links.title">Mes liens</h2>
+          <div class="contact-links">
+            <div class="contact-item">
+              <strong>GitHub</strong>
+              <a href="https://github.com/AirMaTy" target="_blank" rel="noreferrer">github.com/AirMaTy</a>
+            </div>
+            <div class="contact-item">
+              <strong>LinkedIn</strong>
+              <a href="https://www.linkedin.com/in/lacoste-maxime/" target="_blank" rel="noreferrer">
+                linkedin.com/in/lacoste-maxime/
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
