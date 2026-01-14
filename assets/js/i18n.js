@@ -56,7 +56,7 @@
         objective: {
           title: "Objectif",
           text:
-            "Je souhaite poursuivre mon parcours universitaire en informatique vers une formation de niveau master ou une école d'ingénieur, orientée cybersécurité et réseaux, tout en continuant à renforcer mes compétences techniques par des projets concrets et une expérience terrain solide."
+            "Je souhaite poursuivre mon parcours universitaire en informatique vers une formation de niveau master ou une école d'ingénieurs, orientée cybersécurité et réseaux, tout en continuant à renforcer mes compétences techniques par des projets concrets et une expérience terrain solide."
         },
         overview: {
           title: "Ce que vous trouverez ici",
@@ -100,7 +100,7 @@
           },
           networks: {
             title:
-              "1 année d'études universitaires en informatique (orientation réseaux et télécommunications)",
+              "Une année d'études universitaires en informatique (orientation réseaux et télécommunications)",
             meta: "IUT de Mont-de-Marsan - 2022 - 2023",
             item1: "Découverte des architectures réseau et des services fondamentaux.",
             item2: "Premières configurations et diagnostics sur des systèmes Linux.",
@@ -119,7 +119,7 @@
         jobs: {
           title: "Job étudiant",
           cerp: {
-            title: "Préparateur de commande répartition pharmaceutique | Cerp Rouen",
+            title: "Préparateur de commandes en répartition pharmaceutique | Cerp Rouen",
             meta: "Cerp Rouen - Balma, France - CDI - Depuis 2023",
             item1: "Préparation de commandes en zone froide et en zone tempérée",
             item2: "Préparation de commandes de grande volumétrie (grosses quantités, cartons)",
@@ -244,7 +244,7 @@
           infrastructure: {
             title: "Déploiement d'une infrastructure réseau multi-sites",
             context: "Contexte : Université",
-            type: "Systèmes et réseau",
+            type: "Systèmes et réseaux",
             description:
               "Conception et déploiement d'une infrastructure réseau complète dans un environnement pédagogique, incluant plusieurs sites, des services d'infrastructure et le déploiement d'applications conteneurisées.",
             tools: "Linux, architecture réseau, services d'infrastructure, conteneurisation, équipements Cisco",
@@ -266,7 +266,7 @@
           personalInfrastructure: {
             title: "Infrastructure serveur personnelle sécurisée",
             context: "Contexte : Personnel",
-            type: "Systèmes et réseau",
+            type: "Systèmes et réseaux",
             description:
               "Mise en place et administration d'une infrastructure serveur personnelle incluant des services auto-hébergés, du stockage et des mécanismes de sécurisation des accès.",
             tools: "Linux, auto-hébergement, services d'infrastructure, sécurité des systèmes",
@@ -430,7 +430,7 @@
         jobs: {
           title: "Student job",
           cerp: {
-            title: "Order Picker pharmaceutical distribution | Cerp Rouen",
+            title: "Order picker in pharmaceutical distribution | Cerp Rouen",
             meta: "Cerp Rouen - Balma, France - Permanent contract (CDI) - Since 2023",
             item1: "Order picking in cold storage and ambient temperature areas",
             item2: "Preparation of high-volume orders (large quantities, carton-based orders)",
