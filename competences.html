@@ -1,357 +1,416 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Compétences | Maxime Lacoste</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="assets/css/styles.css" />
-</head>
-<body>
-  <header>
-    <div class="container navbar">
-      <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
-      <nav aria-label="Navigation principale">
-        <ul>
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="parcours.html">Parcours</a></li>
-          <li><a href="competences.html">Compétences</a></li>
-          <li><a href="projets.html">Projets</a></li>
-          <li><a href="cv.html">CV</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="pageTitles.competences">Compétences | Maxime Lacoste</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
+        <nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
+          <ul>
+            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
+            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
+            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
+            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="navbar-actions">
+          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
+            EN
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="reveal">
+        <h1 class="section-title" data-i18n="competences.title">Compétences</h1>
+        <p class="section-subtitle" data-i18n="competences.subtitle">
+          Les compétences se renforcent progressivement au fil des trois années de mon parcours universitaire en
+          informatique. Cette page met en avant cette évolution et les niveaux atteints à chaque étape.
+        </p>
+        <div class="timeline" data-i18n-aria-label="competences.timelineAria">
+          <span class="active" data-i18n="competences.years.1">Année 1</span>
+          <span aria-hidden="true">></span>
+          <span class="active" data-i18n="competences.years.2">Année 2</span>
+          <span aria-hidden="true">></span>
+          <span class="active" data-i18n="competences.years.3">Année 3</span>
+        </div>
+      </section>
+
+      <section class="competence-section reveal">
+        <h2 class="section-title" data-i18n="competences.years.1">Année 1</h2>
+        <div class="competence-grid">
+          <article class="card competence-card" id="realiser">
+            <h3 data-i18n="competences.labels.realiser">Réaliser</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="realiser"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=realiser" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card" id="optimiser">
+            <h3 data-i18n="competences.labels.optimiser">Optimiser</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="optimiser"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=optimiser" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card" id="administrer">
+            <h3 data-i18n="competences.labels.administrer">Administrer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="administrer"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=administrer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card" id="gerer">
+            <h3 data-i18n="competences.labels.gerer">Gérer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="gerer"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=gerer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card" id="conduire">
+            <h3 data-i18n="competences.labels.conduire">Conduire</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="conduire"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=conduire" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card" id="collaborer">
+            <h3 data-i18n="competences.labels.collaborer">Collaborer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="collaborer"
+                data-year="1"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=collaborer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="competence-section reveal">
+        <h2 class="section-title" data-i18n="competences.years.2">Année 2</h2>
+        <div class="competence-grid">
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.realiser">Réaliser</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="realiser"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=realiser" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.optimiser">Optimiser</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="optimiser"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=optimiser" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.administrer">Administrer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="administrer"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=administrer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.gerer">Gérer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="gerer"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=gerer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.conduire">Conduire</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="conduire"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=conduire" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.collaborer">Collaborer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="collaborer"
+                data-year="2"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=collaborer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="competence-section reveal">
+        <h2 class="section-title" data-i18n="competences.years.3">Année 3</h2>
+        <div class="competence-grid">
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.realiser">Réaliser</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="realiser"
+                data-year="3"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=realiser" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <div class="card empty-card" aria-hidden="true"></div>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.administrer">Administrer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="administrer"
+                data-year="3"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=administrer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+          <div class="card empty-card" aria-hidden="true"></div>
+          <div class="card empty-card" aria-hidden="true"></div>
+          <article class="card competence-card">
+            <h3 data-i18n="competences.labels.collaborer">Collaborer</h3>
+            <div class="competence-actions">
+              <button
+                class="action-button"
+                type="button"
+                data-level-trigger
+                data-competence="collaborer"
+                data-year="3"
+                aria-haspopup="dialog"
+                aria-controls="levels-modal"
+                aria-expanded="false"
+                data-i18n="competences.actions.levels"
+              >
+                Voir les niveaux
+              </button>
+              <a class="action-button" href="projets.html?competences=collaborer" data-i18n="competences.actions.projects"
+                >Projets liés</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal" id="levels-modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal__overlay" data-modal-close></div>
+      <div class="modal__content" role="document" aria-labelledby="modal-title" tabindex="-1">
+        <button
+          class="modal__close"
+          type="button"
+          data-modal-close
+          aria-label="Fermer"
+          data-i18n-aria-label="common.close"
+        >
+          x
+        </button>
+        <h2 id="modal-title" class="modal__title" data-i18n="competences.modal.title">Niveaux</h2>
+        <div class="modal__body" data-modal-body></div>
+      </div>
     </div>
-  </header>
 
-  <main class="container">
-    <section class="reveal">
-      <h1 class="section-title">Compétences</h1>
-      <p class="section-subtitle">
-        Les compétences se renforcent progressivement du BUT 1 au BUT 3. Cette page met en avant
-        cette évolution et les niveaux atteints à chaque étape.
-      </p>
-      <div class="timeline" aria-label="Progression BUT 1 à BUT 3">
-        <span class="active">BUT 1</span>
-        <span>→</span>
-        <span class="active">BUT 2 (DACS)</span>
-        <span>→</span>
-        <span class="active">BUT 3 (DACS)</span>
+    <footer>
+      <div class="container">
+        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
       </div>
-    </section>
+    </footer>
 
-    <section class="competence-section reveal">
-      <h2 class="section-title">BUT 1</h2>
-      <div class="competence-grid">
-        <article class="card competence-card" id="realiser">
-          <h3>Réaliser</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="realiser"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Réaliser">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card" id="optimiser">
-          <h3>Optimiser</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="optimiser"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Optimiser">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card" id="administrer">
-          <h3>Administrer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="administrer"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Administrer">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card" id="gerer">
-          <h3>Gérer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="gerer"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Gérer">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card" id="conduire">
-          <h3>Conduire</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="conduire"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Conduire">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card" id="collaborer">
-          <h3>Collaborer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="collaborer"
-              data-year="1"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Collaborer">Projets liés</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="competence-section reveal">
-      <h2 class="section-title">BUT 2 (DACS)</h2>
-      <div class="competence-grid">
-        <article class="card competence-card">
-          <h3>Réaliser</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="realiser"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Réaliser">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card">
-          <h3>Optimiser</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="optimiser"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Optimiser">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card">
-          <h3>Administrer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="administrer"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Administrer">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card">
-          <h3>Gérer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="gerer"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Gérer">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card">
-          <h3>Conduire</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="conduire"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Conduire">Projets liés</a>
-          </div>
-        </article>
-        <article class="card competence-card">
-          <h3>Collaborer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="collaborer"
-              data-year="2"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Collaborer">Projets liés</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="competence-section reveal">
-      <h2 class="section-title">BUT 3 (DACS)</h2>
-      <div class="competence-grid">
-        <article class="card competence-card">
-          <h3>Réaliser</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="realiser"
-              data-year="3"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Réaliser">Projets liés</a>
-          </div>
-        </article>
-        <div class="card empty-card" aria-hidden="true"></div>
-        <article class="card competence-card">
-          <h3>Administrer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="administrer"
-              data-year="3"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Administrer">Projets liés</a>
-          </div>
-        </article>
-        <div class="card empty-card" aria-hidden="true"></div>
-        <div class="card empty-card" aria-hidden="true"></div>
-        <article class="card competence-card">
-          <h3>Collaborer</h3>
-          <div class="competence-actions">
-            <button
-              class="action-button"
-              type="button"
-              data-level-trigger
-              data-competence="collaborer"
-              data-year="3"
-              aria-haspopup="dialog"
-              aria-controls="levels-modal"
-              aria-expanded="false"
-            >
-              Voir les niveaux
-            </button>
-            <a class="action-button" href="projets.html?competences=Collaborer">Projets liés</a>
-          </div>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <div class="modal" id="levels-modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal__overlay" data-modal-close></div>
-    <div class="modal__content" role="document" aria-labelledby="modal-title" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Fermer">×</button>
-      <h2 id="modal-title" class="modal__title">Niveaux</h2>
-      <div class="modal__body" data-modal-body></div>
-    </div>
-  </div>
-
-  <footer>
-    <div class="container">
-      <p>© 2026 Maxime Lacoste</p>
-    </div>
-  </footer>
-
-  <script src="assets/js/main.js"></script>
-</body>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
 </html>

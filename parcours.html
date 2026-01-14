@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Parcours | Maxime Lacoste</title>
+    <title data-i18n="pageTitles.parcours">Parcours | Maxime Lacoste</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,105 +16,97 @@
     <header>
       <div class="container navbar">
         <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
-        <nav aria-label="Navigation principale">
+        <nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
           <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="parcours.html">Parcours</a></li>
-            <li><a href="competences.html">Compétences</a></li>
-            <li><a href="projets.html">Projets</a></li>
-            <li><a href="cv.html">CV</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
+            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
+            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
+            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </nav>
+        <div class="navbar-actions">
+          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
+            EN
+          </button>
+        </div>
       </div>
     </header>
 
     <main class="container">
       <section class="reveal">
-        <h1 class="section-title">Parcours</h1>
-        <p class="section-subtitle">
-          Un aperçu chronologique de mon parcours académique, avec des exemples
-          réalistes.
+        <h1 class="section-title" data-i18n="parcours.title">Parcours</h1>
+        <p class="section-subtitle" data-i18n="parcours.subtitle">
+          Un aperçu chronologique de mon parcours académique, avec des exemples réalistes.
         </p>
       </section>
 
       <section class="timeline-list reveal">
-        <!-- BUT INFORMATIQUE -->
         <article class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="card">
             <h2>
-              BUT Informatique (DACS) | Alternance
-              <a
-                href="https://www.carington.fr"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Carington
-              </a>
+              <span data-i18n="parcours.timeline.it.title">Parcours universitaire en informatique | Alternance</span>
+              <a href="https://www.carington.fr" target="_blank" rel="noopener noreferrer">Carington</a>
             </h2>
-            <p class="timeline-meta">
-              IUT de Toulouse · 2023 — 2026 · Déploiement d'applications
+            <p class="timeline-meta" data-i18n="parcours.timeline.it.meta">
+              IUT de Toulouse - 2023 - 2026 - Formation universitaire en informatique, spécialité applications
               communicantes et sécurisées
             </p>
             <ul>
-              <li>
-                Conception et développement d’applications logicielles et web.
+              <li data-i18n="parcours.timeline.it.item1">
+                Conception et développement d'applications logicielles et web.
               </li>
-              <li>
-                Mise en œuvre de services communicants et d’interactions entre
-                applications.
+              <li data-i18n="parcours.timeline.it.item2">
+                Mise en œuvre de services communicants et d'interactions entre applications.
               </li>
-              <li>
-                Bases en systèmes, réseaux et sécurité appliquées aux
-                applications.
+              <li data-i18n="parcours.timeline.it.item3">
+                Bases en systèmes, réseaux et sécurité appliquées aux applications.
               </li>
             </ul>
           </div>
         </article>
 
-        <!-- BUT R&T -->
         <article class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="card">
-            <h2>1 année de BUT Réseaux & Télécommunications</h2>
-            <p class="timeline-meta">IUT de Mont-de-Marsan · 2022 — 2023</p>
-            <ul>
-              <li>
-                Découverte des architectures réseau et des services
-                fondamentaux.
-              </li>
-              <li>
-                Premières configurations et diagnostics sur des systèmes Linux.
-              </li>
-              <li>
-                Travaux pratiques autour de la disponibilité, de la sécurité et
-                du fonctionnement des réseaux.
-              </li>
-            </ul>
-          </div>
-        </article>
-
-        <!-- LYCEE -->
-        <article class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="card">
-            <h2>Lycée Général et Technologique Victor Hugo</h2>
-            <p class="timeline-meta">
-              Colomiers · 2019 — 2022 · Baccalauréat STI2D (spécialité Systèmes
-              d’Information et Numérique)
+            <h2 data-i18n="parcours.timeline.networks.title">
+              1 année d'études universitaires en informatique (orientation réseaux et télécommunications)
+            </h2>
+            <p class="timeline-meta" data-i18n="parcours.timeline.networks.meta">
+              IUT de Mont-de-Marsan - 2022 - 2023
             </p>
             <ul>
-              <li>
-                Acquisition des bases en mathématiques, logique et sciences
-                numériques.
+              <li data-i18n="parcours.timeline.networks.item1">
+                Découverte des architectures réseau et des services fondamentaux.
               </li>
-              <li>
-                Découverte des systèmes techniques et de l’approche projet.
+              <li data-i18n="parcours.timeline.networks.item2">
+                Premières configurations et diagnostics sur des systèmes Linux.
               </li>
-              <li>
-                Travail en équipe, restitution orale et structuration de la
-                pensée.
+              <li data-i18n="parcours.timeline.networks.item3">
+                Travaux pratiques autour de la disponibilité, de la sécurité et du fonctionnement des réseaux.
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="card">
+            <h2 data-i18n="parcours.timeline.lycee.title">Lycée Général et Technologique Victor Hugo</h2>
+            <p class="timeline-meta" data-i18n="parcours.timeline.lycee.meta">
+              Colomiers - 2019 - 2022 - Baccalauréat STI2D (spécialité Systèmes d'Information et Numérique)
+            </p>
+            <ul>
+              <li data-i18n="parcours.timeline.lycee.item1">
+                Acquisition des bases en mathématiques, logique et sciences numériques.
+              </li>
+              <li data-i18n="parcours.timeline.lycee.item2">
+                Découverte des systèmes techniques et de l'approche projet.
+              </li>
+              <li data-i18n="parcours.timeline.lycee.item3">
+                Travail en équipe, restitution orale et structuration de la pensée.
               </li>
             </ul>
           </div>
@@ -124,10 +116,11 @@
 
     <footer>
       <div class="container">
-        <p>© 2026 Maxime Lacoste</p>
+        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
       </div>
     </footer>
 
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
 </html>

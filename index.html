@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Maxime Lacoste | Portfolio</title>
+    <title data-i18n="pageTitles.home">Maxime Lacoste | Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,16 +16,21 @@
     <header>
       <div class="container navbar">
         <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
-        <nav aria-label="Navigation principale">
+        <nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
           <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="parcours.html">Parcours</a></li>
-            <li><a href="competences.html">Compétences</a></li>
-            <li><a href="projets.html">Projets</a></li>
-            <li><a href="cv.html">CV</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
+            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
+            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
+            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </nav>
+        <div class="navbar-actions">
+          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
+            EN
+          </button>
+        </div>
       </div>
     </header>
 
@@ -34,22 +39,28 @@
         <div class="hero-content">
           <h1>Maxime <span>Lacoste</span></h1>
           <p>
-            Étudiant en BUT Informatique (DACS) — Alternant chez
-            <a href="https://carington.fr/">Carington</a>.
+            <span data-i18n="home.hero.introPrefix">
+              Étudiant en parcours universitaire en informatique - Alternant chez
+            </span>
+            <a href="https://carington.fr/">Carington</a><span data-i18n="home.hero.introSuffix">.</span>
           </p>
           <p>
-            Je suis actuellement en alternance chez Carington, où je travaille
-            sur l’automatisation de processus internes et le développement
-            d’outils. <br />Mon quotidien est centré sur des problématiques
-            concrètes : traitement de données, automatisation de tâches
-            répétitives, intégration d’API, et fiabilisation de flux existants.
+            <span data-i18n="home.hero.detail1">
+              Je suis actuellement en alternance chez Carington, où je travaille sur l'automatisation de processus internes
+              et le développement d'outils.
+            </span>
+            <br />
+            <span data-i18n="home.hero.detail2">
+              Mon quotidien est centré sur des problématiques concrètes : traitement de données, automatisation de tâches
+              répétitives, intégration d'API et fiabilisation de flux existants.
+            </span>
           </p>
           <div class="cta">
-            <a class="button primary" href="competences.html"
-              >Voir mes compétences</a
-            >
-            <a class="button" href="projets.html">Voir mes projets</a>
-            <a class="button" href="cv.html">Voir mon CV</a>
+            <a class="button primary" href="competences.html" data-i18n="home.cta.skills">
+              Voir mes compétences
+            </a>
+            <a class="button" href="projets.html" data-i18n="home.cta.projects">Voir mes projets</a>
+            <a class="button" href="cv.html" data-i18n="home.cta.cv">Voir mon CV</a>
           </div>
         </div>
         <div class="hero-media">
@@ -57,56 +68,52 @@
             <img
               src="assets/img/profile.jpg"
               alt="Portrait de Maxime Lacoste"
+              data-i18n-alt="home.photoAlt"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             />
-            <div class="photo-placeholder">Photo à ajouter</div>
+            <div class="photo-placeholder" data-i18n="home.photoPlaceholder">Photo à ajouter</div>
           </div>
         </div>
       </section>
 
       <section class="reveal">
         <div class="card">
-          <h2>Objectif</h2>
-          <p>
-            Je souhaite poursuivre mon parcours vers une formation post-BUT
-            (master ou école d’ingénieur) orientée cybersécurité et réseaux,
-            tout en continuant à renforcer mes compétences techniques par des
-            projets concrets et une expérience terrain solide.
+          <h2 data-i18n="home.objective.title">Objectif</h2>
+          <p data-i18n="home.objective.text">
+            Je souhaite poursuivre mon parcours universitaire en informatique vers une formation de niveau master ou une
+            école d'ingénieur, orientée cybersécurité et réseaux, tout en continuant à renforcer mes compétences techniques
+            par des projets concrets et une expérience terrain solide.
           </p>
         </div>
       </section>
 
       <section class="reveal">
-        <h2 class="section-title">Ce que vous trouverez ici</h2>
-        <p class="section-subtitle">
-          Un aperçu clair de mon parcours, de mes compétences, des projets
-          réalisés et des informations utiles pour un recrutement ou un suivi
-          académique.
+        <h2 class="section-title" data-i18n="home.overview.title">Ce que vous trouverez ici</h2>
+        <p class="section-subtitle" data-i18n="home.overview.subtitle">
+          Un aperçu clair de mon parcours, de mes compétences, des projets réalisés et des informations utiles pour un
+          recrutement ou un suivi académique.
         </p>
         <div class="card-grid">
           <a class="card card-link" href="parcours.html">
-            <h3>Parcours</h3>
-            <p>Mon parcours académique et professionnel.</p>
+            <h3 data-i18n="home.overview.cards.parcours.title">Parcours</h3>
+            <p data-i18n="home.overview.cards.parcours.text">Mon parcours académique et professionnel.</p>
           </a>
           <a class="card card-link" href="competences.html">
-            <h3>Compétences</h3>
-            <p>
-              Progression sur trois années, avec une vision structurée des
-              compétences maîtrisées.
+            <h3 data-i18n="home.overview.cards.competences.title">Compétences</h3>
+            <p data-i18n="home.overview.cards.competences.text">
+              Progression sur trois années, avec une vision structurée des compétences maîtrisées.
             </p>
           </a>
           <a class="card card-link" href="projets.html">
-            <h3>Projets</h3>
-            <p>
-              Exemples de projets en université et en entreprise, axés
-              automatisation et systèmes.
+            <h3 data-i18n="home.overview.cards.projets.title">Projets</h3>
+            <p data-i18n="home.overview.cards.projets.text">
+              Exemples de projets en université et en entreprise, axés automatisation et systèmes.
             </p>
           </a>
           <a class="card card-link" href="cv.html">
-            <h3>CV</h3>
-            <p>
-              Version téléchargeable pour un partage rapide auprès des
-              recruteurs.
+            <h3 data-i18n="home.overview.cards.cv.title">CV</h3>
+            <p data-i18n="home.overview.cards.cv.text">
+              Version téléchargeable pour un partage rapide auprès des recruteurs.
             </p>
           </a>
         </div>
@@ -115,10 +122,11 @@
 
     <footer>
       <div class="container">
-        <p>© 2026 Maxime Lacoste</p>
+        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
       </div>
     </footer>
 
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
 </html>

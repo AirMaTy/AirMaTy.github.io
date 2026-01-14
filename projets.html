@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Projets | Maxime Lacoste</title>
+    <title data-i18n="pageTitles.projets">Projets | Maxime Lacoste</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,110 +19,112 @@
     <header>
       <div class="container navbar">
         <a class="brand" href="index.html">Maxime <span>Lacoste</span></a>
-        <nav aria-label="Navigation principale">
+        <nav aria-label="Navigation principale" data-i18n-aria-label="nav.aria">
           <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="parcours.html">Parcours</a></li>
-            <li><a href="competences.html">Compétences</a></li>
-            <li><a href="projets.html">Projets</a></li>
-            <li><a href="cv.html">CV</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="parcours.html" data-i18n="nav.parcours">Parcours</a></li>
+            <li><a href="competences.html" data-i18n="nav.competences">Compétences</a></li>
+            <li><a href="projets.html" data-i18n="nav.projets">Projets</a></li>
+            <li><a href="cv.html" data-i18n="nav.cv">CV</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </nav>
+        <div class="navbar-actions">
+          <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="langToggle.aria">
+            EN
+          </button>
+        </div>
       </div>
     </header>
 
     <main class="container" data-projects-root>
-      <!-- INTRO -->
       <section class="reveal">
-        <h1 class="section-title">Projets</h1>
-        <p class="section-subtitle">
-          Une sélection de projets académiques, professionnels et personnels
-          illustrant la mise en pratique des compétences du BUT Informatique et
-          mon approche concrète des systèmes et du développement.
+        <h1 class="section-title" data-i18n="projects.title">Projets</h1>
+        <p class="section-subtitle" data-i18n="projects.subtitle">
+          Une sélection de projets universitaires, professionnels et personnels illustrant la mise en pratique des
+          compétences acquises pendant mes études universitaires en informatique et mon approche concrète des systèmes et
+          du développement.
         </p>
       </section>
 
-      <!-- FILTRES -->
       <section class="filter-panel reveal">
-        <h2 class="section-title">Filtrer par compétence</h2>
+        <h2 class="section-title" data-i18n="projects.filter.title">Filtrer par compétence</h2>
         <div class="filter-controls" data-filter-controls>
-          <label class="filter-option"
-            ><input type="checkbox" value="Réaliser" />
-            <span>Réaliser</span></label
-          >
-          <label class="filter-option"
-            ><input type="checkbox" value="Optimiser" />
-            <span>Optimiser</span></label
-          >
-          <label class="filter-option"
-            ><input type="checkbox" value="Administrer" />
-            <span>Administrer</span></label
-          >
-          <label class="filter-option"
-            ><input type="checkbox" value="Gérer" /> <span>Gérer</span></label
-          >
-          <label class="filter-option"
-            ><input type="checkbox" value="Conduire" />
-            <span>Conduire</span></label
-          >
-          <label class="filter-option"
-            ><input type="checkbox" value="Collaborer" />
-            <span>Collaborer</span></label
-          >
+          <label class="filter-option">
+            <input type="checkbox" value="realiser" />
+            <span data-i18n="competences.labels.realiser">Réaliser</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="optimiser" />
+            <span data-i18n="competences.labels.optimiser">Optimiser</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="administrer" />
+            <span data-i18n="competences.labels.administrer">Administrer</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="gerer" />
+            <span data-i18n="competences.labels.gerer">Gérer</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="conduire" />
+            <span data-i18n="competences.labels.conduire">Conduire</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="collaborer" />
+            <span data-i18n="competences.labels.collaborer">Collaborer</span>
+          </label>
         </div>
       </section>
 
       <section class="reveal">
         <div class="filter-banner" data-filter-banner>
-          <span data-filter-label>Filtre actif :</span>
-          <button class="button" type="button" data-clear-filter>
+          <span data-filter-label data-i18n="projects.filter.bannerLabel">Filtre actif :</span>
+          <button class="button" type="button" data-clear-filter data-i18n="projects.filter.reset">
             Réinitialiser
           </button>
         </div>
-        <p class="empty-message" data-empty-message hidden>
+        <p class="empty-message" data-empty-message data-i18n="projects.empty" hidden>
           Aucun projet ne correspond aux filtres sélectionnés.
         </p>
       </section>
 
-      <!-- PROJETS PROFESSIONNELS -->
       <section class="project-section reveal" data-project-section>
-        <h2 class="section-title">Projets professionnels</h2>
+        <h2 class="section-title" data-i18n="projects.sections.professional">Projets professionnels</h2>
         <div class="project-grid">
           <article
             class="card project-card"
             data-project-slug="auto-completion-cerfa"
-            data-competences="Réaliser,Administrer"
-            data-modal-title="Auto-complétion de CERFA"
-            data-modal-text=
-"Cette application a été développée en Python afin d’automatiser le remplissage des formulaires CERFA à partir des documents fournis par le client (pièce d’identité, justificatif de domicile, carte grise, etc.).
-
-L’objectif est de réduire le temps de traitement des dossiers tout en limitant les erreurs liées à la saisie manuelle. Les documents sont analysés via des APIs d’extraction de données et d’OCR, notamment Mindee, afin d’en extraire automatiquement les informations nécessaires (numéro d'immatriculation, numéro VIN, informations sur le nouveau titulaire...), qui sont ensuite utilisées pour préremplir le formulaire.
-
-Une prévisualisation permet de vérifier les données avant validation finale. De plus, la sélection du nombre de pages envoyées à l’API permet de maîtriser les coûts d’utilisation, garantissant un bon équilibre entre automatisation, contrôle humain et optimisation du budget."
+            data-competences="realiser,administrer"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.autoCompletion.modalTitle"
+            data-i18n-data-modal-text="projects.cards.autoCompletion.modalText"
             data-modal-images=""
           >
-            <h3>Auto-complétion de CERFA</h3>
+            <h3 data-i18n="projects.cards.autoCompletion.title">Auto-complétion de CERFA</h3>
             <div class="project-meta">
-              <span class="meta-context"
-                >Contexte : Entreprise (Carington)</span
-              >
-              <span class="meta-type">• Automatisation</span>
+              <span class="meta-context" data-i18n="projects.cards.autoCompletion.context">
+                Contexte : Entreprise (Carington)
+              </span>
+              <span class="meta-type" data-i18n="projects.cards.autoCompletion.type">Automatisation</span>
             </div>
-            <p>
-              Développement d’un système d’auto-complétion de formulaires CERFA
-              à partir de documents clients, avec extraction et traitement
-              automatisés des données.
+            <p data-i18n="projects.cards.autoCompletion.description">
+              Développement d'un système d'auto-complétion de formulaires CERFA à partir de documents clients, avec
+              extraction et traitement automatisés des données.
             </p>
-            <p><strong>Outils :</strong> Python, OCR, API, Linux</p>
+            <p>
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.autoCompletion.tools">Python, OCR, API, Linux</span>
+            </p>
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#realiser"
-                  ><span class="pill">Réaliser</span></a
-                >
-                <a class="pill-link" href="competences.html#administrer"
-                  ><span class="pill">Administrer</span></a
-                >
+                <a class="pill-link" href="competences.html#realiser">
+                  <span class="pill" data-i18n="competences.labels.realiser">Réaliser</span>
+                </a>
+                <a class="pill-link" href="competences.html#administrer">
+                  <span class="pill" data-i18n="competences.labels.administrer">Administrer</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -131,6 +133,7 @@ Une prévisualisation permet de vérifier les données avant validation finale. 
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -140,39 +143,36 @@ Une prévisualisation permet de vérifier les données avant validation finale. 
           <article
             class="card project-card"
             data-project-slug="automatisation-processus-metiers"
-            data-competences="Administrer,Collaborer"
-            data-modal-title="Automatisation de processus métiers"
-            data-modal-text=
-"Ce projet consiste en la conception et la mise en place de processus d’automatisation visant à réduire les tâches répétitives et à fiabiliser les opérations métiers internes.
-
-Des scripts ont été développés et orchestrés afin de traiter automatiquement différentes actions (traitement de données, gestion de fichiers, déclenchements conditionnels, planification), en s’intégrant aux outils et workflows existants.
-
-L’objectif est d’améliorer la productivité, de limiter les erreurs humaines et de garantir une exécution cohérente et traçable des opérations, tout en conservant une supervision et un contrôle adaptés aux besoins métier."
+            data-competences="administrer,collaborer"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.automation.modalTitle"
+            data-i18n-data-modal-text="projects.cards.automation.modalText"
             data-modal-images=""
           >
-            <h3>Automatisation de processus métiers</h3>
+            <h3 data-i18n="projects.cards.automation.title">Automatisation de processus métiers</h3>
             <div class="project-meta">
-              <span class="meta-context"
-                >Contexte : Entreprise (Carington)</span
-              >
-              <span class="meta-type">• Automatisation</span>
+              <span class="meta-context" data-i18n="projects.cards.automation.context">
+                Contexte : Entreprise (Carington)
+              </span>
+              <span class="meta-type" data-i18n="projects.cards.automation.type">Automatisation</span>
             </div>
-            <p>
-              Mise en place de chaînes d’automatisation orchestrant plusieurs
-              scripts et services afin de réduire significativement les tâches
-              manuelles internes.
+            <p data-i18n="projects.cards.automation.description">
+              Mise en place de chaînes d'automatisation orchestrant plusieurs scripts et services afin de réduire
+              significativement les tâches manuelles internes.
             </p>
             <p>
-              <strong>Outils :</strong> Linux, Scripting, Planification, Cron
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.automation.tools">Linux, scripting, planification, cron</span>
             </p>
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#administrer"
-                  ><span class="pill">Administrer</span></a
-                >
-                <a class="pill-link" href="competences.html#collaborer"
-                  ><span class="pill">Collaborer</span></a
-                >
+                <a class="pill-link" href="competences.html#administrer">
+                  <span class="pill" data-i18n="competences.labels.administrer">Administrer</span>
+                </a>
+                <a class="pill-link" href="competences.html#collaborer">
+                  <span class="pill" data-i18n="competences.labels.collaborer">Collaborer</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -181,6 +181,7 @@ L’objectif est d’améliorer la productivité, de limiter les erreurs humaine
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -189,43 +190,41 @@ L’objectif est d’améliorer la productivité, de limiter les erreurs humaine
         </div>
       </section>
 
-      <!-- PROJETS UNIVERSITAIRES -->
       <section class="project-section reveal" data-project-section>
-        <h2 class="section-title">Projets universitaires</h2>
+        <h2 class="section-title" data-i18n="projects.sections.university">Projets universitaires</h2>
         <div class="project-grid">
           <article
             class="card project-card"
             data-project-slug="facebook-like-club-photo"
-            data-competences="Réaliser,Gérer"
-            data-modal-title="Facebook-like Club photo de Nailloux"
-            data-modal-text=
-"Ce projet consiste en la conception et le développement d’une application web de type réseau social dédiée à un club photo.
-
-La plateforme permet aux membres de gérer leur profil, de publier des photos, d’interagir via des commentaires et de participer à la vie du club dans un espace collaboratif. Une attention particulière a été portée à l’organisation des contenus et à la gestion des interactions entre utilisateurs.
-
-L’objectif du projet était de mettre en pratique les principes du développement web, de la gestion des données et du travail en équipe, tout en répondant à un besoin concret de communication et de partage au sein d’une association."
+            data-competences="realiser,gerer"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.clubPhoto.modalTitle"
+            data-i18n-data-modal-text="projects.cards.clubPhoto.modalText"
             data-modal-images=""
           >
-            <h3>Club photo de Nailloux</h3>
+            <h3 data-i18n="projects.cards.clubPhoto.title">Club photo de Nailloux</h3>
             <div class="project-meta">
-              <span class="meta-context">Contexte : Université</span>
-              <span class="meta-type">• Développement web</span>
+              <span class="meta-context" data-i18n="projects.cards.clubPhoto.context">Contexte : Université</span>
+              <span class="meta-type" data-i18n="projects.cards.clubPhoto.type">Développement web</span>
             </div>
-            <p>
-              Développement d’une application web de type réseau social destinée
-              à un club photo, avec gestion des contenus et des interactions
-              entre utilisateurs.
+            <p data-i18n="projects.cards.clubPhoto.description">
+              Développement d'une application web de type réseau social destinée à un club photo, avec gestion des contenus
+              et des interactions entre utilisateurs.
             </p>
-            <p><strong>Outils :</strong> Web, React, SQL, Gestion de projet</p>
+            <p>
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.clubPhoto.tools">Web, React, SQL, gestion de projet</span>
+            </p>
 
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#realiser"
-                  ><span class="pill">Réaliser</span></a
-                >
-                <a class="pill-link" href="competences.html#gerer"
-                  ><span class="pill">Gérer</span></a
-                >
+                <a class="pill-link" href="competences.html#realiser">
+                  <span class="pill" data-i18n="competences.labels.realiser">Réaliser</span>
+                </a>
+                <a class="pill-link" href="competences.html#gerer">
+                  <span class="pill" data-i18n="competences.labels.gerer">Gérer</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -234,6 +233,7 @@ L’objectif du projet était de mettre en pratique les principes du développem
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -243,40 +243,37 @@ L’objectif du projet était de mettre en pratique les principes du développem
           <article
             class="card project-card"
             data-project-slug="infrastructure-reseau-multi-sites"
-            data-competences="Administrer,Conduire"
-            data-modal-title="Déploiement d’une infrastructure réseau multi-sites"
-            data-modal-text=
-"Ce projet de SAE consiste en la conception et le déploiement d’une infrastructure réseau multi-sites dans un contexte pédagogique.
-
-L’infrastructure met en œuvre la segmentation du réseau, des services d’infrastructure centralisés et le déploiement d’applications, tout en assurant la communication entre plusieurs sites. Le projet inclut également la configuration des équipements réseau et des systèmes afin de garantir la disponibilité et la cohérence des services.
-
-L’objectif est de mettre en pratique les notions d’architecture réseau, d’administration système et de conduite de projet, à travers un travail en équipe reproduisant les contraintes d’un environnement professionnel."
+            data-competences="administrer,conduire"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.infrastructure.modalTitle"
+            data-i18n-data-modal-text="projects.cards.infrastructure.modalText"
             data-modal-images=""
           >
-            <h3>Déploiement d’une infrastructure réseau multi-sites</h3>
+            <h3 data-i18n="projects.cards.infrastructure.title">Déploiement d'une infrastructure réseau multi-sites</h3>
             <div class="project-meta">
-              <span class="meta-context">Contexte : Université</span>
-              <span class="meta-type">• Systèmes & réseau</span>
+              <span class="meta-context" data-i18n="projects.cards.infrastructure.context">Contexte : Université</span>
+              <span class="meta-type" data-i18n="projects.cards.infrastructure.type">Systèmes et réseau</span>
             </div>
-            <p>
-              Conception et déploiement d’une infrastructure réseau complète
-              dans un environnement pédagogique, incluant plusieurs sites, des
-              services d’infrastructure et le déploiement d’applications
-              conteneurisées.
+            <p data-i18n="projects.cards.infrastructure.description">
+              Conception et déploiement d'une infrastructure réseau complète dans un environnement pédagogique, incluant
+              plusieurs sites, des services d'infrastructure et le déploiement d'applications conteneurisées.
             </p>
             <p>
-              <strong>Outils :</strong> Linux, Architecture réseau, Services
-              d’infrastructure, Conteneurisation, Équipements Cisco
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.infrastructure.tools">
+                Linux, architecture réseau, services d'infrastructure, conteneurisation, équipements Cisco
+              </span>
             </p>
 
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#administrer"
-                  ><span class="pill">Administrer</span></a
-                >
-                <a class="pill-link" href="competences.html#conduire"
-                  ><span class="pill">Conduire</span></a
-                >
+                <a class="pill-link" href="competences.html#administrer">
+                  <span class="pill" data-i18n="competences.labels.administrer">Administrer</span>
+                </a>
+                <a class="pill-link" href="competences.html#conduire">
+                  <span class="pill" data-i18n="competences.labels.conduire">Conduire</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -285,6 +282,7 @@ L’objectif est de mettre en pratique les notions d’architecture réseau, d�
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -294,35 +292,35 @@ L’objectif est de mettre en pratique les notions d’architecture réseau, d�
           <article
             class="card project-card"
             data-project-slug="gestion-equipe-sportive"
-            data-competences="Réaliser,Gérer"
-            data-modal-title="Application de gestion d’équipe sportive"
-            data-modal-text=
-"Ce projet consiste en le développement d’une application web dédiée à la gestion d’une équipe sportive.
-
-L’application permet de gérer les profils des membres, le calendrier des matchs ainsi que le suivi des statistiques individuelles et collectives. Elle centralise les informations essentielles afin de faciliter l’organisation et le suivi de l’équipe.
-
-L’objectif du projet était de mettre en pratique les bases du développement web et de la gestion des données, tout en répondant à un besoin fonctionnel simple et structuré dans un contexte pédagogique."
+            data-competences="realiser,gerer"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.teamManagement.modalTitle"
+            data-i18n-data-modal-text="projects.cards.teamManagement.modalText"
             data-modal-images=""
           >
-            <h3>Application de gestion d’équipe sportive</h3>
+            <h3 data-i18n="projects.cards.teamManagement.title">Application de gestion d'équipe sportive</h3>
             <div class="project-meta">
-              <span class="meta-context">Contexte : Université</span>
-              <span class="meta-type">• Développement web</span>
+              <span class="meta-context" data-i18n="projects.cards.teamManagement.context">Contexte : Université</span>
+              <span class="meta-type" data-i18n="projects.cards.teamManagement.type">Développement web</span>
             </div>
-            <p>
-              Développement d’une application web fictive permettant la gestion
-              d’une équipe sportive : membres, matchs et suivi des statistiques.
+            <p data-i18n="projects.cards.teamManagement.description">
+              Développement d'une application web fictive permettant la gestion d'une équipe sportive : membres, matchs et
+              suivi des statistiques.
             </p>
-            <p><strong>Outils :</strong> HTML, CSS, PHP, SQL</p>
+            <p>
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.teamManagement.tools">HTML, CSS, PHP, SQL</span>
+            </p>
 
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#realiser"
-                  ><span class="pill">Réaliser</span></a
-                >
-                <a class="pill-link" href="competences.html#gerer"
-                  ><span class="pill">Gérer</span></a
-                >
+                <a class="pill-link" href="competences.html#realiser">
+                  <span class="pill" data-i18n="competences.labels.realiser">Réaliser</span>
+                </a>
+                <a class="pill-link" href="competences.html#gerer">
+                  <span class="pill" data-i18n="competences.labels.gerer">Gérer</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -331,6 +329,7 @@ L’objectif du projet était de mettre en pratique les bases du développement 
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -339,46 +338,45 @@ L’objectif du projet était de mettre en pratique les bases du développement 
         </div>
       </section>
 
-      <!-- PROJETS PERSONNELS -->
       <section class="project-section reveal" data-project-section>
-        <h2 class="section-title">Projets personnels</h2>
+        <h2 class="section-title" data-i18n="projects.sections.personal">Projets personnels</h2>
         <div class="project-grid">
           <article
             class="card project-card"
             data-project-slug="infrastructure-serveur-personnelle"
-            data-competences="Administrer,Conduire"
-            data-modal-title="Infrastructure serveur personnelle sécurisée"
-            data-modal-text=
-"Ce projet personnel consiste en la mise en place et l’administration d’une infrastructure serveur auto-hébergée à domicile, destinée à fournir différents services à usage personnel.
-
-L’infrastructure permet notamment de mettre à disposition un espace de stockage de type NAS, un serveur multimédia (Plex) ainsi que des services applicatifs tels qu’un serveur Minecraft. Les services sont organisés et administrés afin d’assurer leur disponibilité et leur bon fonctionnement.
-
-Ce projet m’a permis de développer mes compétences en administration système, en gestion de services auto-hébergés et en configuration d’un environnement serveur adapté à des usages concrets du quotidien."
+            data-competences="administrer,conduire"
+            data-modal-title=""
+            data-modal-text=""
+            data-i18n-data-modal-title="projects.cards.personalInfrastructure.modalTitle"
+            data-i18n-data-modal-text="projects.cards.personalInfrastructure.modalText"
             data-modal-images=""
           >
-            <h3>Infrastructure serveur personnelle sécurisée</h3>
+            <h3 data-i18n="projects.cards.personalInfrastructure.title">Infrastructure serveur personnelle sécurisée</h3>
             <div class="project-meta">
-              <span class="meta-context">Contexte : Personnel</span>
-              <span class="meta-type">• Systèmes & réseau</span>
+              <span class="meta-context" data-i18n="projects.cards.personalInfrastructure.context">
+                Contexte : Personnel
+              </span>
+              <span class="meta-type" data-i18n="projects.cards.personalInfrastructure.type">Systèmes et réseau</span>
             </div>
-            <p>
-              Mise en place et administration d’une infrastructure serveur
-              personnelle incluant des services auto-hébergés, du stockage et
-              des mécanismes de sécurisation des accès.
+            <p data-i18n="projects.cards.personalInfrastructure.description">
+              Mise en place et administration d'une infrastructure serveur personnelle incluant des services auto-hébergés,
+              du stockage et des mécanismes de sécurisation des accès.
             </p>
             <p>
-              <strong>Outils :</strong> Linux, Auto-hébergement, Services
-              d’infrastructure, Sécurité des systèmes
+              <strong data-i18n="projects.toolsLabel">Outils :</strong>
+              <span data-i18n="projects.cards.personalInfrastructure.tools">
+                Linux, auto-hébergement, services d'infrastructure, sécurité des systèmes
+              </span>
             </p>
 
             <div class="project-footer">
               <div class="pills">
-                <a class="pill-link" href="competences.html#administrer"
-                  ><span class="pill">Administrer</span></a
-                >
-                <a class="pill-link" href="competences.html#conduire"
-                  ><span class="pill">Conduire</span></a
-                >
+                <a class="pill-link" href="competences.html#administrer">
+                  <span class="pill" data-i18n="competences.labels.administrer">Administrer</span>
+                </a>
+                <a class="pill-link" href="competences.html#conduire">
+                  <span class="pill" data-i18n="competences.labels.conduire">Conduire</span>
+                </a>
               </div>
               <button
                 class="action-button project-view"
@@ -387,6 +385,7 @@ Ce projet m’a permis de développer mes compétences en administration systèm
                 aria-haspopup="dialog"
                 aria-controls="project-modal"
                 aria-expanded="false"
+                data-i18n="common.view"
               >
                 Voir
               </button>
@@ -404,19 +403,15 @@ Ce projet m’a permis de développer mes compétences en administration systèm
       aria-hidden="true"
     >
       <div class="modal__overlay" data-modal-close></div>
-      <div
-        class="modal__content"
-        role="document"
-        aria-labelledby="project-modal-title"
-        tabindex="-1"
-      >
+      <div class="modal__content" role="document" aria-labelledby="project-modal-title" tabindex="-1">
         <button
           class="modal__close"
           type="button"
           data-modal-close
           aria-label="Fermer"
+          data-i18n-aria-label="common.close"
         >
-          ×
+          x
         </button>
         <h2 id="project-modal-title" class="modal__title"></h2>
         <div class="modal__body modal__body--project">
@@ -440,6 +435,7 @@ Ce projet m’a permis de développer mes compétences en administration systèm
         class="lightbox__content"
         role="document"
         aria-label="Visionneuse d'image"
+        data-i18n-aria-label="lightbox.aria"
         tabindex="-1"
       >
         <button
@@ -447,29 +443,23 @@ Ce projet m’a permis de développer mes compétences en administration systèm
           type="button"
           data-lightbox-close
           aria-label="Fermer l'image"
+          data-i18n-aria-label="lightbox.close"
         >
-          ×
+          x
         </button>
         <button
           class="lightbox__nav lightbox__nav--prev"
           type="button"
           data-lightbox-prev
           aria-label="Image précédente"
+          data-i18n-aria-label="lightbox.prev"
         >
-          ‹
+          <
         </button>
         <figure class="lightbox__figure">
-          <img
-            class="lightbox__image"
-            data-lightbox-image
-            alt=""
-            loading="lazy"
-          />
-          <figcaption
-            class="lightbox__caption"
-            data-lightbox-caption
-          ></figcaption>
-          <p class="lightbox__fallback" data-lightbox-fallback hidden>
+          <img class="lightbox__image" data-lightbox-image alt="" loading="lazy" />
+          <figcaption class="lightbox__caption" data-lightbox-caption></figcaption>
+          <p class="lightbox__fallback" data-lightbox-fallback data-i18n="lightbox.fallback" hidden>
             Impossible de charger cette image.
           </p>
         </figure>
@@ -478,18 +468,20 @@ Ce projet m’a permis de développer mes compétences en administration systèm
           type="button"
           data-lightbox-next
           aria-label="Image suivante"
+          data-i18n-aria-label="lightbox.next"
         >
-          ›
+          >
         </button>
       </div>
     </div>
 
     <footer>
       <div class="container">
-        <p>© 2026 Maxime Lacoste</p>
+        <p data-i18n="footer.copyright">© 2026 Maxime Lacoste</p>
       </div>
     </footer>
 
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/projects-data.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
